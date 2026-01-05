@@ -4,9 +4,11 @@ namespace App\Exceptions;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -42,13 +44,37 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Throwable  $exception
-     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     * @param  \Throwable  $e
+     * @return JsonResponse
      *
      * @throws \Throwable
      */
-    public function render($request, Throwable $exception)
+    public function render($request, Throwable $e): JsonResponse
     {
-        return parent::render($request, $exception);
+        // Tratamento para Credenciais Inválidas (Lançada no Controller)
+        if ($e instanceof UnauthorizedHttpException) {
+            return new JsonResponse([
+                'error' => 'Unauthorized',
+                'message' => $e->getMessage() ?: 'Credenciais inválidas.'
+            ], 401);
+        }
+
+        // Tratamento para Erros de Validação (Opcional, para padronizar o JSON)
+        if ($e instanceof ValidationException) {
+            return new JsonResponse([
+                'error' => 'Unprocessable Entity',
+                'messages' => $e->errors()
+            ], 422);
+        }
+
+        // Tratamento para Rotas não encontradas
+        if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            return new JsonResponse([
+                'error' => 'Not Found',
+                'message' => 'A rota solicitada não existe.'
+            ], 404);
+        }
+
+        return parent::render($request, $e);
     }
 }

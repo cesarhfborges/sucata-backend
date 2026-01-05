@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class AuthController extends Controller
 {
@@ -17,7 +18,8 @@ class AuthController extends Controller
         $credentials = $request->only(['email', 'password']);
 
         if (! $token = Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Não autorizado'], 401);
+//            return response()->json(['message' => 'Não autorizado'], 401);
+            throw new UnauthorizedHttpException('Bearer', __('auth.failed'));
         }
 
         return response()->json([
