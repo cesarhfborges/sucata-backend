@@ -6,13 +6,13 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
-use Illuminate\Http\Request;
 
 class Handler extends ExceptionHandler
 {
@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler
         // Tratamento para Credenciais Inválidas (Lançada no Controller)
         if ($e instanceof UnauthorizedHttpException) {
             return new JsonResponse([
-                'error' => 'Unauthorized',
+                'error' => 'Unauthorized.',
                 'message' => $e->getMessage() ?: 'Credenciais inválidas.',
             ], 401);
         }
@@ -65,7 +65,7 @@ class Handler extends ExceptionHandler
         // Tratamento para Erros de Validação (Opcional, para padronizar o JSON)
         if ($e instanceof ValidationException) {
             return new JsonResponse([
-                'error' => 'Unprocessable Entity',
+                'error' => 'Unprocessable Entity.',
                 'messages' => $e->errors()
             ], 422);
         }
@@ -73,8 +73,19 @@ class Handler extends ExceptionHandler
         // Tratamento para Rotas não encontradas
         if ($e instanceof NotFoundHttpException) {
             return new JsonResponse([
-                'error' => 'Not Found',
+                'error' => 'Not Found.',
                 'message' => 'A rota solicitada não existe.'
+            ], 404);
+        }
+
+        // Tratamento para IDs não encontrados no Banco (ModelNotFoundException)
+        if ($e instanceof ModelNotFoundException) {
+            $modelName = class_basename($e->getModel());
+            $ids = implode(', ', $e->getIds());
+
+            return new JsonResponse([
+                'error' => 'Recurso não encontrado.',
+                'message' => "Não foi possível localizar o registro [{$ids}] em {$modelName}."
             ], 404);
         }
 

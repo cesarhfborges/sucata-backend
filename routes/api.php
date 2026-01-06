@@ -24,5 +24,8 @@ $router->group([
     $router->group(['prefix' => 'empresas'], function () use ($router) {
         $router->get('', 'EmpresasController@index');
         $router->post('', 'EmpresasController@store');
+        $router->get('{id}', 'EmpresasController@show');
+        $router->put('{id}', 'EmpresasController@update');
+        $router->delete('{id}', 'EmpresasController@destroy');
     });
 });
