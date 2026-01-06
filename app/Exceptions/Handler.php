@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -76,6 +77,14 @@ class Handler extends ExceptionHandler
                 'error' => 'Not Found.',
                 'message' => 'A rota solicitada não existe.'
             ], 404);
+        }
+
+        // Tratamento para erro de integridade dos dados
+        if ($e instanceof QueryException && $e->getCode() === "23000") {
+            return new JsonResponse([
+                'error' => 'Conflito de Integridade',
+                'message' => 'Não é possível realizar esta operação: este registro possui dependências vinculadas e não pode ser removido ou alterado.'
+            ], 409);
         }
 
         // Tratamento para IDs não encontrados no Banco (ModelNotFoundException)

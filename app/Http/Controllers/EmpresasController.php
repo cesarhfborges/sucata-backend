@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Empresa;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,7 +13,7 @@ class EmpresasController extends Controller
      *
      * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $e = Empresa::all();
         return response()->json($e, 200);
@@ -26,7 +25,7 @@ class EmpresasController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $this->validate($request, [
             'razao_social' => 'required|string|max:255',
@@ -59,7 +58,7 @@ class EmpresasController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
         $empresa = Empresa::findOrFail($id);
         return response()->json(['data' => $empresa], 200);
@@ -72,7 +71,7 @@ class EmpresasController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, int $id): JsonResponse
     {
         $empresa = Empresa::findOrFail($id);
 
@@ -109,31 +108,14 @@ class EmpresasController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
         $empresa = Empresa::findOrFail($id);
 
-        try {
-            // 2. Tenta excluir o registro
-            $empresa->delete();
+        $empresa->delete();
 
-            return response()->json([
-                'message' => 'Empresa excluída com sucesso!'
-            ], 200);
-
-        } catch (QueryException $e) {
-            // 3. Trata erro de integridade (ex: empresa tem notas fiscais)
-            if ($e->getCode() === "23000") { // Código SQL para violação de constraint
-                return response()->json([
-                    'error' => 'Conflict',
-                    'message' => 'Não é possível excluir esta empresa pois existem registros vinculados a ela.'
-                ], 409); // 409 Conflict é o ideal para violações de regra de negócio
-            }
-
-            return response()->json([
-                'error' => 'Internal Server Error',
-                'message' => 'Ocorreu um erro ao tentar excluir a empresa.'
-            ], 500);
-        }
+        return response()->json([
+            'message' => 'Empresa excluída com sucesso!'
+        ], 200);
     }
 }
