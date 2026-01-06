@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-
 $l = new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(dirname(__DIR__));
 $l->bootstrap();
 
