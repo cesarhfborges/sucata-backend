@@ -1,6 +1,6 @@
 <?php
 
-/** @var \Laravel\Lumen\Routing\Router $router */
+/** @var Router $router */
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +13,16 @@
 |
 */
 
+use Laravel\Lumen\Routing\Router;
+
 $router->post('login', 'AuthController@login');
 
 $router->group([
     'middleware' => 'auth:api',
 ], function () use ($router) {
-//        $router->post('login', 'AuthController@login');
+
+    $router->group(['prefix' => 'empresas'], function () use ($router) {
+        $router->get('', 'EmpresasController@index');
+        $router->post('', 'EmpresasController@store');
+    });
 });

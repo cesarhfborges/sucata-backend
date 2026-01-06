@@ -21,4 +21,9 @@ class Material extends Model {
         'descricao',
         'un'
     ];
+
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d\TH:i:s',
+        'updated_at' => 'datetime:Y-m-d\TH:i:s',
+    ];
 }

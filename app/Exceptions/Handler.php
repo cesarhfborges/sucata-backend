@@ -2,14 +2,17 @@
 
 namespace App\Exceptions;
 
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
+use Illuminate\Http\Request;
 
 class Handler extends ExceptionHandler
 {
@@ -30,10 +33,10 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Throwable  $exception
+     * @param Throwable $exception
      * @return void
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function report(Throwable $exception)
     {
@@ -43,11 +46,11 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Throwable  $e
+     * @param Request $request
+     * @param Throwable $e
      * @return JsonResponse
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function render($request, Throwable $e): JsonResponse
     {
@@ -55,7 +58,7 @@ class Handler extends ExceptionHandler
         if ($e instanceof UnauthorizedHttpException) {
             return new JsonResponse([
                 'error' => 'Unauthorized',
-                'message' => $e->getMessage() ?: 'Credenciais inválidas.'
+                'message' => $e->getMessage() ?: 'Credenciais inválidas.',
             ], 401);
         }
 
@@ -68,7 +71,7 @@ class Handler extends ExceptionHandler
         }
 
         // Tratamento para Rotas não encontradas
-        if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+        if ($e instanceof NotFoundHttpException) {
             return new JsonResponse([
                 'error' => 'Not Found',
                 'message' => 'A rota solicitada não existe.'

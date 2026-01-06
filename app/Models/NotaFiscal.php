@@ -27,6 +27,8 @@ class NotaFiscal extends Model
         'emissao' => 'datetime',
         'nota_fiscal' => 'integer',
         'serie' => 'integer',
+        'created_at' => 'datetime:Y-m-d\TH:i:s',
+        'updated_at' => 'datetime:Y-m-d\TH:i:s',
     ];
 
     public function empresa(): BelongsTo

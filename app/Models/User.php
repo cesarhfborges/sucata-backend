@@ -28,6 +28,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'ativo'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d\TH:i:s',
+        'updated_at' => 'datetime:Y-m-d\TH:i:s',
+    ];
+
     /**
      * The attributes excluded from the model's JSON form.
      *
