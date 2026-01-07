@@ -28,4 +28,12 @@ $router->group([
         $router->put('{id}', 'EmpresasController@update');
         $router->delete('{id}', 'EmpresasController@destroy');
     });
+
+    $router->group(['prefix' => 'usuarios'], function () use ($router) {
+        $router->get('', 'UsuariosController@index');
+//        $router->post('', 'EmpresasController@store');
+//        $router->get('{id}', 'EmpresasController@show');
+//        $router->put('{id}', 'EmpresasController@update');
+//        $router->delete('{id}', 'EmpresasController@destroy');
+    });
 });

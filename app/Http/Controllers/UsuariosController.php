@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Empresa;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class EmpresasController extends Controller
+class UsuariosController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +16,7 @@ class EmpresasController extends Controller
      */
     public function index(): JsonResponse
     {
-        $e = Empresa::all();
+        $e = User::all();
         return response()->json($e, 200);
     }
 

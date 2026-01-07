@@ -25,12 +25,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'nome',
         'sobrenome',
         'email',
-        'ativo'
+        'ativo',
+        'ult_acesso'
     ];
 
     protected $casts = [
         'created_at' => 'datetime:Y-m-d\TH:i:s',
         'updated_at' => 'datetime:Y-m-d\TH:i:s',
+        'ult_acesso' => 'datetime:Y-m-d\TH:i:s',
+        'ativo' => 'bool'
     ];
 
     /**
@@ -40,6 +43,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = [
         'password',
+        'deleted_at'
     ];
 
     public function getJWTIdentifier()

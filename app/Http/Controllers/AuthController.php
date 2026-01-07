@@ -18,9 +18,12 @@ class AuthController extends Controller
         $credentials = $request->only(['email', 'password']);
 
         if (! $token = Auth::attempt($credentials)) {
-//            return response()->json(['message' => 'Não autorizado'], 401);
             throw new UnauthorizedHttpException('Bearer', __('auth.failed'));
         }
+
+        $u = Auth::user();
+        $u->ult_acesso = new \DateTime();
+        $u->update();
 
         return response()->json([
             'token' => $token,

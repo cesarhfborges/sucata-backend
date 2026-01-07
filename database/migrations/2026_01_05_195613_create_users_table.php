@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('password');
 
             $table->boolean('ativo')->default(false);
+            $table->dateTime('ult_acesso')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
