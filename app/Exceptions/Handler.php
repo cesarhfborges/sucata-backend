@@ -10,7 +10,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
@@ -63,12 +65,12 @@ class Handler extends ExceptionHandler
             ], 401);
         }
 
-        // Tratamento para Erros de Validação (Opcional, para padronizar o JSON)
-        if ($e instanceof ValidationException) {
+        // Tratamento para acesso não permitido
+        if ($e instanceof AuthorizationException || $e instanceof AccessDeniedHttpException) {
             return new JsonResponse([
-                'error' => 'Unprocessable Entity.',
-                'messages' => $e->errors()
-            ], 422);
+                'error' => 'Forbidden.',
+                'message' => 'Você não tem permissão para realizar esta ação.'
+            ], 403);
         }
 
         // Tratamento para Rotas não encontradas
@@ -77,14 +79,6 @@ class Handler extends ExceptionHandler
                 'error' => 'Not Found.',
                 'message' => 'A rota solicitada não existe.'
             ], 404);
-        }
-
-        // Tratamento para erro de integridade dos dados
-        if ($e instanceof QueryException && $e->getCode() === "23000") {
-            return new JsonResponse([
-                'error' => 'Conflito de Integridade',
-                'message' => 'Não é possível realizar esta operação: este registro possui dependências vinculadas e não pode ser removido ou alterado.'
-            ], 409);
         }
 
         // Tratamento para IDs não encontrados no Banco (ModelNotFoundException)
@@ -96,6 +90,30 @@ class Handler extends ExceptionHandler
                 'error' => 'Recurso não encontrado.',
                 'message' => "Não foi possível localizar o registro [{$ids}] em {$modelName}."
             ], 404);
+        }
+
+        // Tratamento para Metodo Não Permitido (405)
+        if ($e instanceof MethodNotAllowedHttpException) {
+            return new JsonResponse([
+                'error' => 'Method Not Allowed.',
+                'message' => 'O método HTTP utilizado (' . $request->method() . ') não é permitido para esta rota.'
+            ], 405);
+        }
+
+        // Tratamento para erro de integridade dos dados
+        if ($e instanceof QueryException && $e->getCode() === "23000") {
+            return new JsonResponse([
+                'error' => 'Conflito de Integridade',
+                'message' => 'Não é possível realizar esta operação: este registro possui dependências vinculadas e não pode ser removido ou alterado.'
+            ], 409);
+        }
+
+        // Tratamento para Erros de Validação (Opcional, para padronizar o JSON)
+        if ($e instanceof ValidationException) {
+            return new JsonResponse([
+                'error' => 'Unprocessable Entity.',
+                'messages' => $e->errors()
+            ], 422);
         }
 
         return parent::render($request, $e);

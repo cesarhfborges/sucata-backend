@@ -17,9 +17,15 @@ use Laravel\Lumen\Routing\Router;
 
 $router->post('login', 'AuthController@login');
 
+
 $router->group([
     'middleware' => 'auth:api',
 ], function () use ($router) {
+
+    $router->get('perfil', 'PerfilController@perfil');
+    $router->put('perfil', 'PerfilController@updatePerfil');
+
+    $router->post('check-email', 'UsuariosController@checkEmailAvailability');
 
     $router->group(['prefix' => 'empresas'], function () use ($router) {
         $router->get('', 'EmpresasController@index');
@@ -31,9 +37,9 @@ $router->group([
 
     $router->group(['prefix' => 'usuarios'], function () use ($router) {
         $router->get('', 'UsuariosController@index');
-//        $router->post('', 'EmpresasController@store');
-//        $router->get('{id}', 'EmpresasController@show');
-//        $router->put('{id}', 'EmpresasController@update');
+        $router->post('', 'UsuariosController@store');
+        $router->get('{id}', 'UsuariosController@show');
+        $router->put('{id}', 'UsuariosController@update');
 //        $router->delete('{id}', 'EmpresasController@destroy');
     });
 });

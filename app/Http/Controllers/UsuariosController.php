@@ -6,6 +6,8 @@ use App\Models\Empresa;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UsuariosController extends Controller
 {
@@ -29,25 +31,32 @@ class UsuariosController extends Controller
     public function store(Request $request): JsonResponse
     {
         $this->validate($request, [
-            'razao_social' => 'required|string|max:255',
-            'nome_fantasia' => 'required|string|max:255',
-            'cnpj' => 'required|string|size:14|unique:empresas,cnpj',
-            'cep' => 'nullable|string|max:8',
-            'logradouro' => 'nullable|string|max:255',
-            'numero' => 'nullable|string|max:10',
-            'complemento' => 'nullable|string|max:255',
-            'bairro' => 'nullable|string|max:100',
-            'cidade' => 'nullable|string|max:100',
-            'uf' => 'nullable|string|size:2',
-            'telefone' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255',
-            'observacoes' => 'nullable|string',
+            'nome' => 'string|max:255',
+            'sobrenome' => 'string|max:255',
+            'email' => 'email|unique:users,email',
+
+            'password'        => 'required|min:6',
+            'confirmPassword' => 'required|same:password',
+
+            'ativo'           => 'sometimes|boolean'
         ]);
 
-        $empresa = Empresa::create($request->all());
+        $user = new User();
 
-        // 3. Retorno com Status 201 (Created)
-        return response()->json($empresa, 201);
+        $user->nome = $request->input('nome');
+        $user->sobrenome = $request->input('sobrenome');
+        $user->email = $request->input('email');
+
+
+        $user->password = Hash::make($request->input('password'));
+
+        if ($request->filled('ativo')) {
+            $user->ativo = $request->input('ativo');
+        }
+
+        $user->save();
+
+        return response()->json($user, 201);
     }
 
     /**
@@ -58,7 +67,7 @@ class UsuariosController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $empresa = Empresa::findOrFail($id);
+        $empresa = User::findOrFail($id);
         return response()->json($empresa, 200);
     }
 
@@ -71,30 +80,26 @@ class UsuariosController extends Controller
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        $empresa = Empresa::findOrFail($id);
+        $user = User::findOrFail($id);
 
-        // 2. Validação
         $this->validate($request, [
-            'razao_social' => 'required|string|max:255',
-            'nome_fantasia' => 'required|string|max:255',
-            // O terceiro parâmetro do unique ({$id}) permite salvar se o CNPJ for o mesmo desta empresa
-            'cnpj' => "required|string|size:14|unique:empresas,cnpj,{$id}",
-            'cep' => 'nullable|string|max:8',
-            'logradouro' => 'nullable|string|max:255',
-            'numero' => 'nullable|string|max:10',
-            'complemento' => 'nullable|string|max:255',
-            'bairro' => 'nullable|string|max:100',
-            'cidade' => 'nullable|string|max:100',
-            'uf' => 'nullable|string|size:2',
-            'telefone' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255',
-            'observacoes' => 'nullable|string',
+            'nome' => 'string|max:255',
+            'sobrenome' => 'string|max:255',
+            'email' => 'email|unique:users,email,' . $user->id,
+
+            'password'        => 'sometimes|nullable|min:6',
+            'confirmPassword' => 'required_with:password|same:password',
         ]);
 
-        $empresa->fill($request->all());
-        $empresa->save();
+        $user->fill($request->only(['nome', 'sobrenome', 'email']));
 
-        return response()->json($empresa, 200);
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
+
+        $user->save();
+
+        return response()->json($user, 200);
     }
 
     /**
@@ -105,12 +110,35 @@ class UsuariosController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
-        $empresa = Empresa::findOrFail($id);
+        $empresa = User::findOrFail($id);
 
         $empresa->delete();
 
         return response()->json([
             'message' => 'Empresa excluída com sucesso!'
         ], 200);
+    }
+
+    public function checkEmailAvailability(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'required|email',
+            'id'    => 'sometimes|integer|nullable' // ID é opcional
+        ]);
+
+        $email = $request->input('email');
+        $id = $request->input('id');
+
+        // Busca se existe algum usuário com esse email,
+        // MAS que não seja o usuário do ID informado
+        $exists = User::where('email', $email)
+            ->when($id, function ($query, $id) {
+                return $query->where('id', '!=', $id);
+            })
+            ->exists();
+
+        return response()->json([
+            'available' => !$exists
+        ]);
     }
 }
