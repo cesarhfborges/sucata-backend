@@ -42,4 +42,12 @@ $router->group([
         $router->put('{id}', 'UsuariosController@update');
         $router->delete('{id}', 'UsuariosController@destroy');
     });
+
+    $router->group(['prefix' => 'clientes'], function () use ($router) {
+        $router->get('', 'ClientesController@index');
+//        $router->post('', 'UsuariosController@store');
+//        $router->get('{id}', 'UsuariosController@show');
+//        $router->put('{id}', 'UsuariosController@update');
+//        $router->delete('{id}', 'UsuariosController@destroy');
+    });
 });

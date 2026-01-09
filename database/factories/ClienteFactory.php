@@ -13,9 +13,23 @@ class ClienteFactory extends Factory
 
     public function definition(): array
     {
-        return [
-            'nome' => $this->faker->company(),
-            'cpf_cnpj' => $this->faker->numerify('########')."0001".$this->faker->numerify('##'),
+//        return [
+//            'nome_razaosocial' => $this->faker->company(),
+//            'sobrenome_nomefantasia' => $this->faker->company(),
+//            'cpf_cnpj' => $this->faker->numerify('########')."0001".$this->faker->numerify('##'),
+//            'cep' => $this->faker->numerify('########'),
+//            'logradouro' => $this->faker->streetName(),
+//            'numero' => $this->faker->buildingNumber(),
+//            'complemento' => $this->faker->streetSuffix,
+//            'bairro' => $this->faker->citySuffix(),
+//            'cidade' => $this->faker->city(),
+//            'uf' => $this->faker->randomElement(Estados::values()),
+//            'telefone' => preg_replace('/[^0-9]/', '', $this->faker->phoneNumber()),
+//            'email' => $this->faker->unique()->companyEmail(),
+//            'observacoes' => $this->faker->sentence(),
+//        ];
+
+        $dados = [
             'cep' => $this->faker->numerify('########'),
             'logradouro' => $this->faker->streetName(),
             'numero' => $this->faker->buildingNumber(),
@@ -23,9 +37,69 @@ class ClienteFactory extends Factory
             'bairro' => $this->faker->citySuffix(),
             'cidade' => $this->faker->city(),
             'uf' => $this->faker->randomElement(Estados::values()),
-            'telefone' => $this->faker->phoneNumber(),
-            'email' => $this->faker->unique()->companyEmail(),
+            'telefone' => preg_replace('/\D/', '', $this->faker->phoneNumber()),
             'observacoes' => $this->faker->sentence(),
         ];
+
+        $isPessoaJuridica = $this->faker->boolean(50);
+
+        if ($isPessoaJuridica) {
+            $dados['nome_razaosocial'] = $this->faker->company();
+            $dados['sobrenome_nomefantasia'] = $this->faker->companySuffix();
+            $dados['email'] = $this->faker->unique()->companyEmail();
+            $dados['cpf_cnpj'] = $this->generateCNPJ();
+        } else {
+            $dados['nome_razaosocial'] = $this->faker->firstName();
+            $dados['sobrenome_nomefantasia'] = $this->faker->lastName();
+            $dados['email'] = $this->faker->unique()->safeEmail();
+            $dados['cpf_cnpj'] = $this->generateCPF();
+        }
+
+        return $dados;
+    }
+
+    private function generateCNPJ(): string
+    {
+        $cnpj = [];
+
+        for ($i = 0; $i < 12; $i++) {
+            $cnpj[] = rand(0, 9);
+        }
+
+        $weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+        $weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+
+        $sum = 0;
+        foreach ($weights1 as $i => $weight) {
+            $sum += $cnpj[$i] * $weight;
+        }
+        $cnpj[12] = ($sum % 11 < 2) ? 0 : 11 - ($sum % 11);
+
+        $sum = 0;
+        foreach ($weights2 as $i => $weight) {
+            $sum += $cnpj[$i] * $weight;
+        }
+        $cnpj[13] = ($sum % 11 < 2) ? 0 : 11 - ($sum % 11);
+
+        return implode('', $cnpj);
+    }
+
+    private function generateCPF(): string
+    {
+        $cpf = [];
+
+        for ($i = 0; $i < 9; $i++) {
+            $cpf[] = rand(0, 9);
+        }
+
+        for ($j = 9; $j < 11; $j++) {
+            $sum = 0;
+            for ($i = 0; $i < $j; $i++) {
+                $sum += $cpf[$i] * (($j + 1) - $i);
+            }
+            $cpf[$j] = (($sum * 10) % 11) % 10;
+        }
+
+        return implode('', $cpf);
     }
 }

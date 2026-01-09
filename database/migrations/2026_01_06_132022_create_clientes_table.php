@@ -16,7 +16,8 @@ return new class extends Migration
             $table->id();
 //            $table->string('codigo')->primary()->unique();
 
-            $table->string('nome')->nullable(false);
+            $table->string('nome_razaosocial', 200)->nullable(false);
+            $table->string('sobrenome_nomefantasia', 200)->nullable(false);
             $table->string('cpf_cnpj')->nullable(false)->unique();
 
             $table->string('cep')->nullable();
