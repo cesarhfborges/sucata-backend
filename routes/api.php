@@ -40,6 +40,6 @@ $router->group([
         $router->post('', 'UsuariosController@store');
         $router->get('{id}', 'UsuariosController@show');
         $router->put('{id}', 'UsuariosController@update');
-//        $router->delete('{id}', 'EmpresasController@destroy');
+        $router->delete('{id}', 'UsuariosController@destroy');
     });
 });

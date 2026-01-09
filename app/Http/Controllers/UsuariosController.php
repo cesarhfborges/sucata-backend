@@ -110,12 +110,18 @@ class UsuariosController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
+        if (Auth::id() === $id) {
+            return response()->json([
+                'message' => 'Não é permitido excluir seu próprio usuário.'
+            ], 405);
+        }
+
         $empresa = User::findOrFail($id);
 
         $empresa->delete();
 
         return response()->json([
-            'message' => 'Empresa excluída com sucesso!'
+            'message' => 'Usuário excluído com sucesso!'
         ], 200);
     }
 

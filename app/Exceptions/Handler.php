@@ -104,7 +104,7 @@ class Handler extends ExceptionHandler
         if ($e instanceof QueryException && $e->getCode() === "23000") {
             return new JsonResponse([
                 'error' => 'Conflito de Integridade',
-                'message' => 'Não é possível realizar esta operação: este registro possui dependências vinculadas e não pode ser removido ou alterado.'
+                'message' => 'Não é possível realizar esta operação este registro possui registros vinculados e não pode ser removido.'
             ], 409);
         }
 
