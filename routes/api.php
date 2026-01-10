@@ -48,6 +48,6 @@ $router->group([
 //        $router->post('', 'UsuariosController@store');
 //        $router->get('{id}', 'UsuariosController@show');
 //        $router->put('{id}', 'UsuariosController@update');
-//        $router->delete('{id}', 'UsuariosController@destroy');
+        $router->delete('{id}', 'ClientesController@destroy');
     });
 });
