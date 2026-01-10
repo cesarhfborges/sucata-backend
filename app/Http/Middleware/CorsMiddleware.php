@@ -6,33 +6,37 @@ use Closure;
 
 class CorsMiddleware
 {
+
+    private array $allowedOrigins = [
+        'http://localhost:4200',
+        'http://127.0.0.1:4200',
+    ];
+
     public function handle($request, Closure $next)
     {
+        $origin = $request->headers->get('Origin');
+        $allowOrigin = in_array($origin, $this->allowedOrigins, true)
+            ? $origin
+            : '';
+
         $headers = [
-            'Access-Control-Allow-Origin' => '*',
+            'Access-Control-Allow-Origin' => $allowOrigin,
             'Access-Control-Allow-Methods' => 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
             'Access-Control-Allow-Credentials' => 'true',
             'Access-Control-Max-Age' => '86400',
-            'Access-Control-Allow-Headers' => join(', ', [
-                'Accept',
-                'Accept-Encoding',
-                'Accept-Language',
-                'Authorization',
-                'Cache-Control',
-                'Content-Type',
-                'X-Requested-With',
-                'User-Agent',
-                'Connection'
-            ])
+            'Access-Control-Allow-Headers' => 'Authorization, Content-Type, Accept, X-Requested-With',
         ];
 
         if ($request->isMethod('OPTIONS')) {
-            return response()->json('{"method":"OPTIONS"}', 200, $headers);
+            return response([], 204, $headers);
         }
 
         $response = $next($request);
+
         foreach ($headers as $key => $value) {
-            $response->header($key, $value);
+            if ($value !== '') {
+                $response->header($key, $value);
+            }
         }
 
         return $response;
