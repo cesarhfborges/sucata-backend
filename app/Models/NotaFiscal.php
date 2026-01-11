@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,11 +21,14 @@ class NotaFiscal extends Model
         'nota_fiscal',
         'serie',
         'emissao',
-        'status',
+    ];
+
+    protected $appends = [
+        'pendente',
     ];
 
     protected $casts = [
-        'emissao' => 'datetime',
+        'emissao' => 'date:Y-m-d',
         'nota_fiscal' => 'integer',
         'serie' => 'integer',
         'created_at' => 'datetime:Y-m-d\TH:i:s',
@@ -41,7 +45,22 @@ class NotaFiscal extends Model
         return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 
-    public function itens()
+    protected function pendente(): Attribute
+    {
+        return Attribute::get(function () {
+            if ($this->relationLoaded('itens')) {
+                return $this->itens->contains(
+                    fn($item) => $item->saldo_devedor > 0
+                );
+            }
+
+            return $this->itens()
+                ->where('saldo_devedor', '>', 0)
+                ->exists();
+        });
+    }
+
+    public function itens(): HasMany
     {
         return $this->hasMany(NotaFiscalItem::class, 'nota_fiscal_id');
     }

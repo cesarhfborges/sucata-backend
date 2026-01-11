@@ -20,14 +20,17 @@ return new class extends Migration
 
             $table->integer('nota_fiscal');
             $table->integer('serie');
-            $table->dateTime('emissao');
-
-            $table->enum('status', ['PENDENTE', 'DEVOLVIDA']);
+            $table->date('emissao');
 
             $table->timestamps();
 
             $table->foreign('empresa_id')->references('id')->on('empresas');
             $table->foreign('cliente_id')->references('id')->on('clientes');
+
+            $table->unique(
+                ['empresa_id', 'nota_fiscal', 'serie'],
+                'notas_fiscais_empresa_nota_serie_unique'
+            );
         });
     }
 

@@ -43,11 +43,37 @@ $router->group([
         $router->delete('{id}', 'UsuariosController@destroy');
     });
 
+    $router->group(['prefix' => 'materiais'], function () use ($router) {
+        $router->get('', 'MateriaisController@index');
+        $router->post('', 'MateriaisController@store');
+        $router->get('{codigo}', 'MateriaisController@show');
+        $router->put('{codigo}', 'MateriaisController@update');
+        $router->delete('{codigo}', 'MateriaisController@destroy');
+    });
+
     $router->group(['prefix' => 'clientes'], function () use ($router) {
         $router->get('', 'ClientesController@index');
 //        $router->post('', 'UsuariosController@store');
 //        $router->get('{id}', 'UsuariosController@show');
 //        $router->put('{id}', 'UsuariosController@update');
         $router->delete('{id}', 'ClientesController@destroy');
+    });
+
+    $router->group(['prefix' => 'notas-fiscais'], function () use ($router) {
+        $router->get('', 'NotasFiscaisController@index');
+        $router->post('', 'NotasFiscaisController@store');
+        $router->get('{id}', 'NotasFiscaisController@show');
+        $router->put('{id}', 'NotasFiscaisController@update');
+        $router->delete('{id}', 'NotasFiscaisController@destroy');
+
+        $router->group(['prefix' => '{id}/itens'], function () use ($router) {
+            $router->get('', 'NotaFiscalItensController@index');
+            $router->post('', 'NotaFiscalItensController@store');
+            $router->get('{itemId}', 'NotaFiscalItensController@show');
+            $router->put('{itemId}', 'NotaFiscalItensController@update');
+            $router->delete('{itemId}', 'NotaFiscalItensController@destroy');
+
+            $router->post('{itemId}/movimentar', 'NotaFiscalItensController@movimentar');
+        });
     });
 });

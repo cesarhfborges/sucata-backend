@@ -17,10 +17,18 @@ return new class extends Migration
             $table->unsignedBigInteger('nota_fiscal_id')->nullable(false);
             $table->string('material_id')->nullable(false);
 
+            $table->integer('faturado')->default(0);
+            $table->integer('saldo_devedor')->default(0);
+
             $table->timestamps();
 
             $table->foreign('nota_fiscal_id')->references('id')->on('notas_fiscais');
             $table->foreign('material_id')->references('codigo')->on('materiais');
+
+            $table->unique(
+                ['nota_fiscal_id', 'material_id'],
+                'nota_fiscal_itens_nota_material_unique'
+            );
         });
     }
 

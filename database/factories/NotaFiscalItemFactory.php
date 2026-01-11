@@ -28,7 +28,9 @@ class NotaFiscalItemFactory extends Factory
             'material_id' => function () {
                 $material = Material::inRandomOrder()->first() ?? Material::factory()->create();
                 return $material->codigo;
-            }
+            },
+            'faturado' => $this->faker->numberBetween(1, 30),
+            'saldo_devedor' => $this->faker->numberBetween(1, 30),
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,12 +26,25 @@ class NotaFiscalItem extends Model
     protected $fillable = [
         'nota_fiscal_id',
         'material_id',
+        'faturado',
+        'saldo_devedor',
+    ];
+
+    protected $appends = [
+        'pendente',
     ];
 
     protected $casts = [
         'created_at' => 'datetime:Y-m-d\TH:i:s',
         'updated_at' => 'datetime:Y-m-d\TH:i:s',
     ];
+
+    protected function pendente(): Attribute
+    {
+        return Attribute::get(
+            fn () => $this->saldo_devedor > 0
+        );
+    }
 
     /**
      * Relacionamento: O item pertence a uma Nota Fiscal.

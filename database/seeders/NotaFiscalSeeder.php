@@ -15,8 +15,8 @@ class NotaFiscalSeeder extends Seeder
     {
         if (app()->environment('local', 'development')) {
             NotaFiscal::factory()
-                ->count(100)
-                ->has(NotaFiscalItem::factory()->count(7), 'itens')
+                ->count(3000)
+                ->comItens(7)
                 ->create();
         }
     }

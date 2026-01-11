@@ -101,11 +101,38 @@ class Handler extends ExceptionHandler
         }
 
         // Tratamento para erro de integridade dos dados
-        if ($e instanceof QueryException && $e->getCode() === "23000") {
-            return new JsonResponse([
-                'error' => 'Conflito de Integridade',
-                'message' => 'Não é possível realizar esta operação este registro possui registros vinculados e não pode ser removido.'
-            ], 409);
+        if ($e instanceof QueryException) {
+
+            $sqlState = $e->errorInfo[0] ?? null;
+            $errorCode = $e->errorInfo[1] ?? null;
+
+            if ($sqlState === '23000' && $errorCode === 1062) {
+                return new JsonResponse([
+                    'error'   => 'Registro duplicado.',
+                    'message' => 'Já existe um registro com os mesmos dados cadastrados.'
+                ], 409);
+            }
+
+            if ($sqlState === '23000' && $errorCode === 1451) {
+                return new JsonResponse([
+                    'error'   => 'Conflito de integridade.',
+                    'message' => 'Este registro possui vínculos e não pode ser removido.'
+                ], 409);
+            }
+
+            if ($sqlState === '23000' && $errorCode === 1452) {
+                return new JsonResponse([
+                    'error'   => 'Relacionamento inválido.',
+                    'message' => 'O registro relacionado informado não existe.'
+                ], 422);
+            }
+
+            if ($sqlState === '23000' && $errorCode === 1048) {
+                return new JsonResponse([
+                    'error'   => 'Campo obrigatório ausente.',
+                    'message' => 'Um ou mais campos obrigatórios não foram informados.'
+                ], 422);
+            }
         }
 
         // Tratamento para Erros de Validação (Opcional, para padronizar o JSON)
