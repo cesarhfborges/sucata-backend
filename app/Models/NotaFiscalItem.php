@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property integer $nota_fiscal_id
+ * @property integer $material_id
+ * @property integer $faturado
+ * @property integer $saldo_devedor
+ */
 class NotaFiscalItem extends Model
 {
     use HasFactory;
