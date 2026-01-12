@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\NotaFiscal;
+use App\Support\Formatters;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -76,20 +77,24 @@ class RelatoriosController extends Controller
         }
 
         $cliente = [
-            'codigo'   => $notas->first()?->cliente->id ?? '',
-            'nome'     => $notas->first()?->cliente->nome_razaosocial ?? '',
-            'empresa'  => $notas->first()?->empresa->razao_social ?? '',
-            'cnpj'     => $notas->first()?->empresa->cnpj ?? '',
-            'telefone' => $notas->first()?->cliente->telefone ?? '',
+            'nome_razaosocial'     => $notas->first()?->cliente->nome_razaosocial ?? '',
+            'sobrenome_nomefantasia'     => $notas->first()?->cliente->sobrenome_nomefantasia ?? '',
+            'cpf_cnpj'     => Formatters::cpfCnpj($notas->first()?->cliente->cpf_cnpj ?? ''),
+            'telefone' => Formatters::telefone($notas->first()?->cliente->telefone ?? ''),
+            'email' => $notas->first()?->cliente->email ?? '',
+            'bairro' => $notas->first()?->cliente->bairro ?? '',
+            'cidade' => $notas->first()?->cliente->cidade ?? '',
+            'uf' => $notas->first()?->cliente->uf ?? '',
         ];
 
         $logotipo = $this->loadImageAsBase64(
             storage_path('app/images/platoflex.png')
         );
 
-        $pdf = Pdf::loadView('relatorios.exemplo', [
+        $pdf = Pdf::loadView('relatorios.relatorio-por-cliente', [
             'logotipo' => $logotipo,
             'titulo'   => 'RELATÓRIO DE SUCATAS POR CLIENTE',
+            'nome_fantasia' => 'Platoflex embreagens',
             'cliente'  => $cliente,
             'itens'    => $itens,
             'data'     => Carbon::now()->format('d/m/Y'),
