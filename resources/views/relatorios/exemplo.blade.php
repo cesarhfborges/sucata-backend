@@ -241,8 +241,8 @@
     <tr>
         <td colspan="2" class="assinatura-aviso">
             <strong>AVISO IMPORTANTE:</strong><br>
-            A NÃO DEVOLUÇÃO DA SUCATA NO PERÍODO DE 90 DIAS, IMPLICARÁ NO FATURAMENTO DAS MESMAS,
-            CUJO O VALOR SERÁ O MESMO DA PEÇA.
+            A NÃO DEVOLUÇÃO DA SUCATA NO PERÍODO DE 90 DIAS, IMPLICARÁ NO </br>
+            FATURAMENTO DAS MESMAS, CUJO O VALOR SERÁ O MESMO DA PEÇA.
         </td>
     </tr>
 
