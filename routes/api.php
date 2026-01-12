@@ -53,9 +53,9 @@ $router->group([
 
     $router->group(['prefix' => 'clientes'], function () use ($router) {
         $router->get('', 'ClientesController@index');
-//        $router->post('', 'UsuariosController@store');
-//        $router->get('{id}', 'UsuariosController@show');
-//        $router->put('{id}', 'UsuariosController@update');
+        $router->post('', 'ClientesController@store');
+        $router->get('{id}', 'ClientesController@show');
+        $router->put('{id}', 'ClientesController@update');
         $router->delete('{id}', 'ClientesController@destroy');
     });
 

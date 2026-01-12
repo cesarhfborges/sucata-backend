@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ClientesController extends Controller
 {
@@ -45,24 +46,48 @@ class ClientesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return JsonResponse
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param Request $request
      * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        //
+        $this->validate($request, [
+            'nome_razaosocial'       => 'required|string|max:255',
+            'sobrenome_nomefantasia' => 'nullable|string|max:255',
+            'cpf_cnpj'               => 'required|string|max:20|unique:clientes,cpf_cnpj',
+
+            'cep'        => 'nullable|string|max:10',
+            'logradouro' => 'nullable|string|max:255',
+            'numero'     => 'nullable|string|max:20',
+            'complemento'=> 'nullable|string|max:255',
+            'bairro'     => 'nullable|string|max:255',
+            'cidade'     => 'nullable|string|max:255',
+            'uf'         => 'nullable|string|size:2',
+
+            'telefone'   => 'nullable|string|max:20',
+            'email'      => 'nullable|email|max:255',
+            'observacoes'=> 'nullable|string|max:1000',
+        ]);
+
+        $cliente = Cliente::create($request->only([
+            'nome_razaosocial',
+            'sobrenome_nomefantasia',
+            'cpf_cnpj',
+            'cep',
+            'logradouro',
+            'numero',
+            'complemento',
+            'bairro',
+            'cidade',
+            'uf',
+            'telefone',
+            'email',
+            'observacoes',
+        ]));
+
+        return response()->json($cliente, 201);
     }
 
     /**
@@ -71,20 +96,11 @@ class ClientesController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        //
-    }
+        $cliente = Cliente::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return JsonResponse
-     */
-    public function edit($id)
-    {
-        //
+        return response()->json($cliente, 200);
     }
 
     /**
@@ -94,9 +110,50 @@ class ClientesController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id): JsonResponse
     {
-        //
+        $cliente = Cliente::findOrFail($id);
+
+        $this->validate($request, [
+            'nome_razaosocial'       => 'required|string|max:255',
+            'sobrenome_nomefantasia' => 'nullable|string|max:255',
+            'cpf_cnpj'               => [
+                'required',
+                'string',
+                'max:20',
+                Rule::unique('clientes', 'cpf_cnpj')->ignore($cliente->id),
+            ],
+
+            'cep'        => 'nullable|string|max:10',
+            'logradouro' => 'nullable|string|max:255',
+            'numero'     => 'nullable|string|max:20',
+            'complemento'=> 'nullable|string|max:255',
+            'bairro'     => 'nullable|string|max:255',
+            'cidade'     => 'nullable|string|max:255',
+            'uf'         => 'nullable|string|size:2',
+
+            'telefone'   => 'nullable|string|max:20',
+            'email'      => 'nullable|email|max:255',
+            'observacoes'=> 'nullable|string|max:1000',
+        ]);
+
+        $cliente->update($request->only([
+            'nome_razaosocial',
+            'sobrenome_nomefantasia',
+            'cpf_cnpj',
+            'cep',
+            'logradouro',
+            'numero',
+            'complemento',
+            'bairro',
+            'cidade',
+            'uf',
+            'telefone',
+            'email',
+            'observacoes',
+        ]));
+
+        return response()->json($cliente, 200);
     }
 
     /**
