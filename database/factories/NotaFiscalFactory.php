@@ -45,9 +45,8 @@ class NotaFiscalFactory extends Factory
                 return;
             }
 
-            $agora = new DateTime();
-
-            $itens = $materiais->map(function ($material) use ($nota, $agora) {
+            $itens = $materiais->map(function ($material) use ($nota) {
+                $agora = new DateTime();
                 $faturado = rand(1, 30);
 
                 return [
