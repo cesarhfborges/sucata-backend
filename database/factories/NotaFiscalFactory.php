@@ -6,7 +6,9 @@ use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Material;
 use App\Models\NotaFiscal;
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\DB;
 
 class NotaFiscalFactory extends Factory
 {
@@ -39,13 +41,26 @@ class NotaFiscalFactory extends Factory
                 ->limit($quantidade)
                 ->get();
 
-            foreach ($materiais as $material) {
-                $nota->itens()->create([
-                    'material_id'   => $material->codigo,
-                    'faturado'      => rand(1, 30),
-                    'saldo_devedor' => rand(0, 30),
-                ]);
+            if ($materiais->isEmpty()) {
+                return;
             }
+
+            $agora = new DateTime();
+
+            $itens = $materiais->map(function ($material) use ($nota, $agora) {
+                $faturado = rand(1, 30);
+
+                return [
+                    'nota_fiscal_id' => $nota->id,
+                    'material_id'    => $material->codigo,
+                    'faturado'       => $faturado,
+                    'saldo_devedor'  => rand(0, $faturado),
+                    'created_at'     => $agora,
+                    'updated_at'     => $agora,
+                ];
+            })->toArray();
+
+            DB::table('nota_fiscal_itens')->insert($itens);
         });
     }
 }

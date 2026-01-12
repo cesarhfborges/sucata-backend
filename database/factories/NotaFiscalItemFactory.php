@@ -31,7 +31,7 @@ class NotaFiscalItemFactory extends Factory
                 return $material->codigo;
             },
             'faturado' => $faturado,
-            'saldo_devedor' => $this->faker->numberBetween(1, $faturado),
+            'saldo_devedor' => $this->faker->numberBetween(0, $faturado),
         ];
     }
 }
