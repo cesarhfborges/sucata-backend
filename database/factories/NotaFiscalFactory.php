@@ -53,7 +53,7 @@ class NotaFiscalFactory extends Factory
                     'nota_fiscal_id' => $nota->id,
                     'material_id'    => $material->codigo,
                     'faturado'       => $faturado,
-                    'saldo_devedor'  => rand(0, $faturado),
+                    'saldo_devedor'  => $this->faker->boolean() === true ? rand(0, $faturado): 0,
                     'created_at'     => $agora,
                     'updated_at'     => $agora,
                 ];

@@ -27,6 +27,15 @@ $router->group([
 
     $router->post('check-email', 'UsuariosController@checkEmailAvailability');
 
+    $router->group(['prefix' => 'estatisticas'], function () use ($router) {
+        $router->get('resumo', 'EstatisticasController@resumo');
+        $router->get('status-geral', 'EstatisticasController@statusGeral');
+        $router->get('materiais-maior-debito', 'EstatisticasController@materiaisComMaiorDebito');
+        $router->get('clientes-maior-pendencia', 'EstatisticasController@clientesMaiorPendencia');
+        $router->get('ultimas-movimentacoes', 'EstatisticasController@ultimasMovimentacoes');
+        $router->get('pendencias-por-faixa', 'EstatisticasController@notasPendentesPorFaixaAtraso');
+    });
+
     $router->group(['prefix' => 'empresas'], function () use ($router) {
         $router->get('', 'EmpresasController@index');
         $router->post('', 'EmpresasController@store');
