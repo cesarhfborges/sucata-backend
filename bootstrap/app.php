@@ -63,6 +63,7 @@ $app->configure('app');
 $app->configure('auth');
 $app->configure('database');
 $app->configure('jwt');
+$app->configure('dompdf');
 
 /*
 |--------------------------------------------------------------------------
@@ -100,6 +101,7 @@ $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(PHPOpenSourceSaver\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(Barryvdh\DomPDF\ServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

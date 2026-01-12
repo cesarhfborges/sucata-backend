@@ -85,4 +85,10 @@ $router->group([
             $router->post('{itemId}/movimentar', 'NotaFiscalItensController@movimentar');
         });
     });
+
+    $router->group(['prefix' => 'relatorios'], function () use ($router) {
+        $router->post('por-cliente', 'RelatoriosController@porCliente');
+    });
+
+
 });
