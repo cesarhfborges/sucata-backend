@@ -46,9 +46,9 @@ $router->group([
     $router->group(['prefix' => 'materiais'], function () use ($router) {
         $router->get('', 'MateriaisController@index');
         $router->post('', 'MateriaisController@store');
-        $router->get('{codigo}', 'MateriaisController@show');
-        $router->put('{codigo}', 'MateriaisController@update');
-        $router->delete('{codigo}', 'MateriaisController@destroy');
+        $router->get('{id}', 'MateriaisController@show');
+        $router->put('{id}', 'MateriaisController@update');
+        $router->delete('{id}', 'MateriaisController@destroy');
     });
 
     $router->group(['prefix' => 'clientes'], function () use ($router) {

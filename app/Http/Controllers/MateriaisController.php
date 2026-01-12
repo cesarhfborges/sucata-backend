@@ -13,13 +13,37 @@ class MateriaisController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        $materiais = Material::query()
-            ->orderBy('descricao')
-            ->get();
+        $this->validate($request, [
+            'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:5|max:100',
+            'sort_by' => 'sometimes|string|in:codigo,descricao,un',
+            'sort_dir' => 'sometimes|string|in:asc,desc',
+            'filter' => 'sometimes|string|min:1|max:255',
+        ]);
+
+        $perPage = (int) $request->get('per_page', 10);
+        $sortBy  = $request->get('sort_by', 'descricao');
+        $sortDir = $request->get('sort_dir', 'asc');
+        $filter  = $request->get('filter');
+
+        $query = Material::query();
+
+        if ($filter) {
+            $query->where(function ($q) use ($filter) {
+                $q->where('codigo', 'like', "%{$filter}%")
+                    ->orWhere('descricao', 'like', "%{$filter}%")
+                    ->orWhere('un', 'like', "%{$filter}%");
+            });
+        }
+
+        $materiais = $query
+            ->orderBy($sortBy, $sortDir)
+            ->paginate($perPage);
 
         return response()->json($materiais, 200);
     }
@@ -55,8 +79,8 @@ class MateriaisController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return Response
+     * @param string $id
+     * @return JsonResponse
      */
     public function show(string $id): JsonResponse
     {

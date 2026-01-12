@@ -23,14 +23,15 @@ class NotaFiscalItemFactory extends Factory
      */
     public function definition(): array
     {
+        $faturado = $this->faker->numberBetween(1, 30);
         return [
             'nota_fiscal_id' => NotaFiscal::factory(),
             'material_id' => function () {
                 $material = Material::inRandomOrder()->first() ?? Material::factory()->create();
                 return $material->codigo;
             },
-            'faturado' => $this->faker->numberBetween(1, 30),
-            'saldo_devedor' => $this->faker->numberBetween(1, 30),
+            'faturado' => $faturado,
+            'saldo_devedor' => $this->faker->numberBetween(1, $faturado),
         ];
     }
 }

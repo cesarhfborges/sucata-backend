@@ -39,8 +39,16 @@ class NotasFiscaisController extends Controller
         $q->whereIn('empresa_id', $empresas);
         $q->where('cliente_id', $request->input('cliente'));
 
-        if ($request->input('status') !== 'TODAS') {
-            $q->where('status', $request->input('status'));
+        if ($request->input('status') === 'PENDENTE') {
+            $q->whereHas('itens', function ($sub) {
+                $sub->where('saldo_devedor', '>', 0);
+            });
+        }
+
+        if ($request->input('status') === 'DEVOLVIDA') {
+            $q->whereDoesntHave('itens', function ($sub) {
+                $sub->where('saldo_devedor', '>', 0);
+            });
         }
 
         $q->orderBy('emissao', 'desc')

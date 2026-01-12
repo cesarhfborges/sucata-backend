@@ -18,9 +18,9 @@ return new class extends Migration
 
             $table->string('nome_razaosocial', 200)->nullable(false);
             $table->string('sobrenome_nomefantasia', 200)->nullable(false);
-            $table->string('cpf_cnpj')->nullable(false)->unique();
+            $table->string('cpf_cnpj', 14)->unique()->nullable(false);
 
-            $table->string('cep')->nullable();
+            $table->string('cep', 8)->nullable();
             $table->string('logradouro')->nullable();
             $table->string('numero')->nullable();
             $table->string('complemento')->nullable();
@@ -28,12 +28,15 @@ return new class extends Migration
             $table->string('cidade')->nullable();
             $table->enum('uf', Estados::values())->nullable();
 
-            $table->string('telefone')->nullable();
-            $table->string('email')->nullable();
+            $table->string('telefone', 20)->nullable();
+            $table->string('email', 200)->nullable();
 
             $table->longText('observacoes')->nullable();
 
             $table->timestamps();
+
+            $table->index('nome_razaosocial', 'idx_cliente_nome');
+            $table->index('sobrenome_nomefantasia', 'idx_cliente_fantasia');
         });
     }
 

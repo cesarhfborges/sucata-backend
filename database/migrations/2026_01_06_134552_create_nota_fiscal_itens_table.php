@@ -29,6 +29,11 @@ return new class extends Migration
                 ['nota_fiscal_id', 'material_id'],
                 'nota_fiscal_itens_nota_material_unique'
             );
+
+            $table->index(
+                ['nota_fiscal_id', 'saldo_devedor'],
+                'idx_nfi_nota_saldo'
+            );
         });
     }
 

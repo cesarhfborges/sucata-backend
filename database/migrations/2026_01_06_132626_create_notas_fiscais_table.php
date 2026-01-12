@@ -31,6 +31,11 @@ return new class extends Migration
                 ['empresa_id', 'nota_fiscal', 'serie'],
                 'notas_fiscais_empresa_nota_serie_unique'
             );
+
+            $table->index(
+                ['empresa_id', 'cliente_id', 'emissao'],
+                'idx_nf_empresa_cliente_emissao'
+            );
         });
     }
 

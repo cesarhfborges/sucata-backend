@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\NotaFiscal;
 use App\Models\NotaFiscalItem;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 
 class NotaFiscalSeeder extends Seeder
@@ -16,7 +17,7 @@ class NotaFiscalSeeder extends Seeder
         if (app()->environment('local', 'development')) {
             NotaFiscal::factory()
                 ->count(3000)
-                ->comItens(7)
+                ->comItens(Factory::create()->numberBetween(5, 15))
                 ->create();
         }
     }
