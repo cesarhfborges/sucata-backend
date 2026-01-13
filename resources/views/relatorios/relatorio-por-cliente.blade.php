@@ -6,7 +6,7 @@
 
     <style>
         @page {
-            margin: 10mm 5mm 10mm 5mm;
+            margin: 5mm 5mm 5mm 5mm;
         }
 
         body {
@@ -87,6 +87,18 @@
             text-align: center;
         }
 
+        .text-left {
+            text-align: left;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .resumo {
+            background: #f0f0f0;
+        }
+
         .assinatura-table {
             width: 100%;
             border-collapse: collapse;
@@ -98,10 +110,6 @@
             border: 1px solid #000;
             /*border-bottom: 1px solid #000;*/
             padding: 8px 6px;
-        }
-
-        .text-center {
-            text-align: center;
         }
 
         .assinatura-label {
@@ -229,7 +237,7 @@
         <th>Produto</th>
         <th style="width: 10%">Status</th>
         <th style="width: 10%">Faturado</th>
-        <th style="width: 10%">Saldo</th>
+        <th style="width: 12%">Saldo Devedor</th>
     </tr>
     </thead>
     <tbody>
@@ -242,7 +250,7 @@
             <td>{{ $item['produto'] }}</td>
             <td>{{ $item['status'] }}</td>
             <td class="right">{{ $item['faturado'] }}</td>
-            <td class="right">{{ $item['saldo'] }}</td>
+            <td class="right">{{ $item['saldo_devedor'] }}</td>
         </tr>
     @empty
         <tr>
@@ -252,6 +260,14 @@
         </tr>
     @endforelse
     </tbody>
+    <tfoot>
+    <tr class="resumo">
+        <td colspan="4">Total de registros: {{$total['quantidade']}}</td>
+        <td colspan="2" class="text-right">Total Faturado/Devedor</td>
+        <td colspan="1" class="text-right">{{$total['faturado']}}</td>
+        <td colspan="1" class="text-right">{{$total['saldo_devedor']}}</td>
+    </tr>
+    </tfoot>
 </table>
 
 {{-- =========================
@@ -324,7 +340,7 @@
             $textWidth = $fontMetrics->getTextWidth($text, $font, $size);
 
             $x = $pdf->get_width() - $textWidth - 15;
-            $y = $pdf->get_height() - 38;
+            $y = $pdf->get_height() - 24;
 
             $pdf->text($x, $y, $text, $font, $size, $color);
         });
