@@ -1,9 +1,10 @@
-FROM php:8.2-fpm
+FROM php:8.2-apache
 
-# Diretório de trabalho
 WORKDIR /var/www/html
 
+# ============================
 # Dependências do sistema
+# ============================
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -15,7 +16,9 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# ============================
 # Extensões PHP
+# ============================
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install \
         pdo \
@@ -24,16 +27,39 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         zip \
         gd
 
+# ============================
+# Apache: habilitar mod_rewrite
+# ============================
+RUN a2enmod rewrite
+
+# ============================
+# Ajustar DocumentRoot para /public
+# ============================
+RUN sed -ri 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf \
+    && sed -ri 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# ============================
 # Composer (oficial)
+# ============================
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# ============================
 # Copia o projeto
+# ============================
 COPY . .
 
-# Instala dependências do Laravel/Lumen
-RUN composer install --no-dev --optimize-autoloader
+# ============================
+# Instala dependências PHP
+# ============================
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --prefer-dist \
+    --optimize-autoloader
 
-# Permissões
+# ============================
+# Permissões (Laravel/Lumen)
+# ============================
 RUN mkdir -p \
     storage/logs \
     storage/framework/cache \
@@ -41,7 +67,12 @@ RUN mkdir -p \
     && chown -R www-data:www-data storage \
     && chmod -R 775 storage storage/logs storage/framework/cache storage/framework/views storage/app
 
-
+# ============================
+# Expor porta
+# ============================
 EXPOSE 80
 
-CMD ["php-fpm"]
+# ============================
+# Start Apache
+# ============================
+CMD ["apache2-foreground"]
