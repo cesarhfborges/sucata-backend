@@ -15,7 +15,7 @@ services:
       - 'APP_ENV=${APP_ENV:-production}'
       - 'APP_DEBUG=${APP_DEBUG:-false}'
       - 'APP_KEY=${SERVICE_BASE64_64_KEY}'
-      - 'APP_URL=${APP_URL:-${SERVICE_URL_SUCATA}}'
+      - 'APP_URL=${SERVICE_URL_SUCATA}'
       - 'APP_TIMEZONE=${APP_TIMEZONE:-America/Sao_Paulo'
 
     depends_on:
