@@ -12,7 +12,6 @@ services:
     environment:
       - SERVICE_FQDN_SUCATA_80
       - 'APP_NAME=${APP_NAME:-SUCATA}'
-      - 'APP_ENV=${APP_ENV:-production}'
       - 'APP_DEBUG=${APP_DEBUG:-false}'
       - 'APP_KEY=${SERVICE_BASE64_64_KEY}'
       - 'APP_URL=${SERVICE_URL_SUCATA}'
