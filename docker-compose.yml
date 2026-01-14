@@ -1,0 +1,98 @@
+version: "3.9"
+
+services:
+  app:
+    image: php:8.2-fpm
+    container_name: lumen_app
+    restart: unless-stopped
+
+    working_dir: /var/www/html
+
+    volumes:
+      - ./:/var/www/html
+
+    environment:
+      # ===== APP =====
+      APP_NAME: "Lumen"
+      APP_ENV: "development"
+      APP_KEY: "base64:${APP_KEY_BASE64}"
+      APP_DEBUG: "true"
+      APP_URL: "http://localhost"
+      APP_TIMEZONE: "America/Sao_Paulo"
+      APP_LOCALE: "pt-BR"
+
+      # ===== LOG =====
+      LOG_CHANNEL: "stack"
+      LOG_SLACK_WEBHOOK_URL: ""
+
+      # ===== DATABASE =====
+      DB_CONNECTION: "mysql"
+      DB_HOST: "db"
+      DB_PORT: "3306"
+      DB_DATABASE: "sucata"
+      DB_USERNAME: "teste"
+      DB_PASSWORD: "teste"
+
+      # ===== CACHE / QUEUE =====
+      CACHE_DRIVER: "file"
+      QUEUE_CONNECTION: "sync"
+
+      # ===== JWT =====
+      JWT_SECRET: "${JWT_SECRET}"
+      JWT_ALGO: "HS256"
+
+    depends_on:
+      - db
+
+    command: >
+      sh -c "
+      apt-get update &&
+      apt-get install -y
+        git
+        unzip
+        libzip-dev
+        libpng-dev
+        libjpeg-dev
+        libfreetype6-dev
+        libonig-dev
+        libxml2-dev &&
+      docker-php-ext-configure gd --with-freetype --with-jpeg &&
+      docker-php-ext-install
+        pdo
+        pdo_mysql
+        mbstring
+        zip
+        gd &&
+      php-fpm
+      "
+
+    networks:
+      - lumen_net
+
+  db:
+    image: mariadb:11
+    container_name: lumen_db
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sucata
+      MYSQL_USER: teste
+      MYSQL_PASSWORD: teste
+      TZ: America/Sao_Paulo
+
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+    ports:
+      - "3306:3306"
+
+    networks:
+      - lumen_net
+
+networks:
+  lumen_net:
+    driver: bridge
+
+volumes:
+  mariadb_data:
