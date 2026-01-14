@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Enums\Estados;
 use App\Models\Empresa;
-use Faker;
 use Illuminate\Database\Seeder;
 
 class EmpresaSeeder extends Seeder
@@ -14,8 +13,6 @@ class EmpresaSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker\Factory::create();
-
         $empresas = [
             [
                 'nome' => 'Recopeças Industrial',
