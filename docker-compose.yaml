@@ -1,5 +1,5 @@
 services:
-  app:
+  sucata:
     image: php:8.2-fpm
     container_name: sucata
     restart: unless-stopped
@@ -10,10 +10,12 @@ services:
       - ./:/var/www/html
 
     environment:
+      - SERVICE_FQDN_SUCATA_80
       - 'APP_NAME=${APP_NAME:-SUCATA}'
       - 'APP_ENV=${APP_ENV:-production}'
-      - 'APP_DEBUG=${APP_DEBUG:-production}'
-      - 'APP_KEY=${APP_KEY:-${SERVICE_BASE64_64_KEY}}'
+      - 'APP_DEBUG=${APP_DEBUG:-false}'
+      - 'APP_KEY=${APP_KEY:-${SERVICE_BASE64_64_APP_KEY}'
+      - 'APP_URL=${APP_URL:-${SERVICE_FQDN_CALLDESK}'
 
     # ===== APP =====
     #      - 'APP_NAME="Lumen"'
