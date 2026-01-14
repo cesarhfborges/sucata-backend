@@ -15,7 +15,7 @@ services:
       # ===== APP =====
       APP_NAME: "Lumen"
       APP_ENV: "development"
-      APP_KEY: "base64:${APP_KEY_BASE64}"
+      APP_KEY: "${SERVICE_BASE64_64_KEY}"
       APP_DEBUG: "true"
       APP_URL: "http://localhost"
       APP_TIMEZONE: "America/Sao_Paulo"
@@ -38,7 +38,7 @@ services:
       QUEUE_CONNECTION: "sync"
 
       # ===== JWT =====
-      JWT_SECRET: "${JWT_SECRET}"
+      JWT_SECRET: "${SERVICE_BASE64_64_KEY}"
       JWT_ALGO: "HS256"
 
     depends_on:
