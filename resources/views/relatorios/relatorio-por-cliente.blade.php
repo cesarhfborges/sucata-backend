@@ -136,10 +136,6 @@
         .footer-table {
             width: 100%;
         }
-
-        .right {
-            text-align: right;
-        }
     </style>
 </head>
 <body>
@@ -152,7 +148,7 @@
         <tr>
             <td class="logo">
                 @if (!empty($logotipo))
-                    <img src="{{ $logotipo }}" alt="Platôflex">
+                    <img src="{{ $logotipo }}" alt="Platôflex" height="30px">
                 @endif
             </td>
 
@@ -171,20 +167,21 @@
 {{-- =========================
      DADOS DO CLIENTE
 ========================= --}}
-<div class="info">
-    <table style="width: 100%; border-collapse: collapse;">
+@if(isset($cliente))
+    <div class="info">
+        <table style="width: 100%; border-collapse: collapse;">
 
-        <!-- CPF / CNPJ -->
-        <tr>
-            <td colspan="2">
-                <span class="label">CPF/CNPJ:</span><br>
-                {{ $cliente['cpf_cnpj'] }}
-            </td>
-        </tr>
+            <!-- CPF / CNPJ -->
+            <tr>
+                <td colspan="2">
+                    <span class="label">CPF/CNPJ:</span><br>
+                    {{ $cliente['cpf_cnpj'] }}
+                </td>
+            </tr>
 
-        <!-- Nome / Fantasia -->
-        <tr>
-            <td style="width: 50%;">
+            <!-- Nome / Fantasia -->
+            <tr>
+                <td style="width: 50%;">
                 <span class="label">
                     @if(strlen($cliente['cpf_cnpj']) > 11)
                         Razão social:
@@ -192,10 +189,10 @@
                         Nome:
                     @endif
                 </span><br>
-                {{ $cliente['nome_razaosocial'] }}
-            </td>
+                    {{ $cliente['nome_razaosocial'] }}
+                </td>
 
-            <td style="width: 50%;">
+                <td style="width: 50%;">
                 <span class="label">
                     @if(strlen($cliente['cpf_cnpj']) > 11)
                         Nome fantasia:
@@ -203,32 +200,32 @@
                         Sobrenome:
                     @endif
                 </span><br>
-                {{ $cliente['sobrenome_nomefantasia'] }}
-            </td>
-        </tr>
+                    {{ $cliente['sobrenome_nomefantasia'] }}
+                </td>
+            </tr>
 
-        <!-- Telefone / Email -->
-        <tr>
-            <td style="width: 50%;">
-                <span class="label">Telefone:</span><br>
-                {{ $cliente['telefone'] }}
-            </td>
+            <!-- Telefone / Email -->
+            <tr>
+                <td style="width: 50%;">
+                    <span class="label">Telefone:</span><br>
+                    {{ $cliente['telefone'] }}
+                </td>
 
-            <td style="width: 50%;">
-                <span class="label">Email:</span><br>
-                {{ $cliente['email'] }}
-            </td>
-        </tr>
+                <td style="width: 50%;">
+                    <span class="label">Email:</span><br>
+                    {{ $cliente['email'] }}
+                </td>
+            </tr>
 
-    </table>
-</div>
+        </table>
+    </div>
+@endif
 
 
 {{-- =========================
      TABELA DE ITENS
 ========================= --}}
 <table class="table">
-    <thead>
     <tr>
         <th style="width: 5%">NF</th>
         <th style="width: 5%">Série</th>
@@ -239,7 +236,6 @@
         <th style="width: 10%">Faturado</th>
         <th style="width: 12%">Saldo Devedor</th>
     </tr>
-    </thead>
     <tbody>
     @forelse ($itens as $item)
         <tr>
@@ -259,15 +255,13 @@
             </td>
         </tr>
     @endforelse
-    </tbody>
-    <tfoot>
     <tr class="resumo">
         <td colspan="4">Total de registros: {{$total['quantidade']}}</td>
         <td colspan="2" class="text-right">Total Faturado/Devedor</td>
         <td colspan="1" class="text-right">{{$total['faturado']}}</td>
         <td colspan="1" class="text-right">{{$total['saldo_devedor']}}</td>
     </tr>
-    </tfoot>
+    </tbody>
 </table>
 
 {{-- =========================
@@ -282,69 +276,80 @@
     </tr>
     </thead>
     <tbody>
-    <!-- AVISO 100% -->
-    <tr>
-        <td colspan="2" class="assinatura-aviso">
-            <strong>AVISO IMPORTANTE:</strong><br>
-            A NÃO DEVOLUÇÃO DA SUCATA NO PERÍODO DE 90 DIAS, IMPLICARÁ NO </br>
-            FATURAMENTO DAS MESMAS, CUJO O VALOR SERÁ O MESMO DA PEÇA.
-        </td>
-    </tr>
+        <!-- AVISO 100% -->
+        <tr>
+            <td colspan="2" class="assinatura-aviso">
+                <strong>AVISO IMPORTANTE:</strong><br>
+                A NÃO DEVOLUÇÃO DA SUCATA NO PERÍODO DE 90 DIAS, IMPLICARÁ NO </br>
+                FATURAMENTO DAS MESMAS, CUJO O VALOR SERÁ O MESMO DA PEÇA.
+            </td>
+        </tr>
 
-    <tr class="assinatura-content">
-        <td class="text-center assinatura-space">
-            _______/_______/_______
-        </td>
-        <td class="text-center assinatura-space">
-            __________________________________________________
-        </td>
-    </tr>
+        @if(isset($cliente))
+            <tr class="assinatura-content">
+                <td class="text-center assinatura-space">
+                    _______/_______/_______
+                </td>
+                <td class="text-center assinatura-space">
+                    __________________________________________________
+                </td>
+            </tr>
 
-    <tr class="assinatura-content">
-        <td class="text-center assinatura-label">
-            Data
-        </td>
-        <td class="text-center assinatura-label">
-            {{ $cliente['nome_razaosocial'] }}
-        </td>
-    </tr>
+            <tr class="assinatura-content">
+                <td class="text-center assinatura-label">
+                    Data
+                </td>
+                <td class="text-center assinatura-label">
+                    {{ $cliente['nome_razaosocial'] }}
+                </td>
+            </tr>
+        @endif
     </tbody>
 
 </table>
 
 
-{{-- =========================
-     RODAPÉ
-========================= --}}
-<div class="footer">
-    <table class="footer-table">
-        <tr>
-            <td>
+{{--=========================--}}
+{{--     RODAPÉ--}}
+{{--=========================--}}
+
+<htmlpagefooter name="footer">
+    <div style="border-top:1px solid #000;font-size:9px;text-align:right;padding-top:4px">
+        Página {PAGENO} de {nbpg}
+    </div>
+</htmlpagefooter>
+
+<sethtmlpagefooter name="footer" value="on" />
+
+{{--<div class="footer">--}}
+{{--    <table class="footer-table">--}}
+{{--        <tr>--}}
+{{--            <td>--}}
 {{--                {{ $nome_fantasia }}--}}
-                Data: {{ $data }} às {{ $hora }}
-            </td>
-            <td class="right"></td>
-        </tr>
-    </table>
-</div>
-<script type="text/php">
-    if (isset($pdf)) {
-        $pdf->page_script(function ($pageNumber, $pageCount, $pdf, $fontMetrics) {
+{{--                Data: {{ $data }} às {{ $hora }}--}}
+{{--            </td>--}}
+{{--            <td class="right"></td>--}}
+{{--        </tr>--}}
+{{--    </table>--}}
+{{--</div>--}}
+{{--<script type="text/php">--}}
+{{--    if (isset($pdf)) {--}}
+{{--        $pdf->page_script(function ($pageNumber, $pageCount, $pdf, $fontMetrics) {--}}
 
-            $text = "Página {$pageNumber} de {$pageCount}";
+{{--            $text = "Página {$pageNumber} de {$pageCount}";--}}
 
-            $font = $fontMetrics->getFont("DejaVu Sans", "normal");
-            $size = 7;
-            $color = [0, 0, 0];
+{{--            $font = $fontMetrics->getFont("DejaVu Sans", "normal");--}}
+{{--            $size = 7;--}}
+{{--            $color = [0, 0, 0];--}}
 
-            $textWidth = $fontMetrics->getTextWidth($text, $font, $size);
+{{--            $textWidth = $fontMetrics->getTextWidth($text, $font, $size);--}}
 
-            $x = $pdf->get_width() - $textWidth - 15;
-            $y = $pdf->get_height() - 24;
+{{--            $x = $pdf->get_width() - $textWidth - 15;--}}
+{{--            $y = $pdf->get_height() - 24;--}}
 
-            $pdf->text($x, $y, $text, $font, $size, $color);
-        });
-    }
-</script>
+{{--            $pdf->text($x, $y, $text, $font, $size, $color);--}}
+{{--        });--}}
+{{--    }--}}
+{{--</script>--}}
 </body>
 </html>

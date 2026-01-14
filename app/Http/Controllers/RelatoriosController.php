@@ -2,120 +2,142 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\NotaFiscal;
+use App\Models\Cliente;
 use App\Models\NotaFiscalItem;
 use App\Support\Formatters;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Mpdf\Mpdf;
+use Mpdf\MpdfException;
+use Throwable;
 
 class RelatoriosController extends Controller
 {
 
+    /**
+     * @throws MpdfException
+     * @throws Throwable
+     */
     public function porCliente(Request $request)
     {
+        // =========================
+        // VALIDAÇÃO
+        // =========================
         $this->validate($request, [
-            'cliente_id' => 'required|integer|exists:clientes,id',
-            'empresas' => 'nullable|array',
+            'empresas' => 'required|array|min:1',
             'empresas.*' => 'integer|exists:empresas,id',
+
             'status' => 'required|in:TODAS,PENDENTE,DEVOLVIDAS',
-            'datas.inicio' => 'required|date',
-            'datas.fim' => 'required|date|after_or_equal:datas.inicio',
+
+            'cliente_id' => 'nullable|integer|exists:clientes,id',
+
+            'datas.inicio' => 'nullable|date',
+            'datas.fim' => 'nullable|date|after_or_equal:datas.inicio',
         ]);
 
+        // =========================
+        // QUERY PRINCIPAL (ITENS)
+        // =========================
         $query = NotaFiscalItem::query()
+            ->select([
+                'nota_fiscal_itens.nota_fiscal_id',
+                'nota_fiscal_itens.material_id',
+                'nota_fiscal_itens.faturado',
+                'nota_fiscal_itens.saldo_devedor',
+            ])
             ->with([
-                'notaFiscal.cliente',
-                'notaFiscal.empresa',
-                'material',
+                'material:codigo,descricao',
+                'notaFiscal:id,empresa_id,cliente_id,nota_fiscal,serie,emissao',
+                'notaFiscal.cliente:id,nome_razaosocial,sobrenome_nomefantasia,cpf_cnpj,telefone,email',
             ])
             ->whereHas('notaFiscal', function ($q) use ($request) {
 
-                // Cliente
-                $q->where('cliente_id', $request->cliente_id);
+                // Empresas (obrigatório)
+                $q->whereIn('empresa_id', $request->empresas);
 
-                // Datas
-                $q->whereBetween('emissao', [
-                    $request->datas['inicio'],
-                    $request->datas['fim'],
-                ]);
+                // Cliente (opcional)
+                if (!empty($request->cliente_id)) {
+                    $q->where('cliente_id', $request->cliente_id);
+                }
 
-                // Empresas
-                if (!empty($request->empresas)) {
-                    $q->whereIn('empresa_id', $request->empresas);
+                // Datas (opcional)
+                if (!empty($request->datas['inicio']) && !empty($request->datas['fim'])) {
+                    $q->whereBetween('emissao', [
+                        $request->datas['inicio'],
+                        $request->datas['fim'],
+                    ]);
                 }
             });
 
-        // 🔥 FILTRO DE STATUS NO NÍVEL CORRETO
+        // Status
         if ($request->status === 'PENDENTE') {
             $query->where('saldo_devedor', '>', 0);
-        }
-
-        if ($request->status === 'DEVOLVIDAS') {
+        } elseif ($request->status === 'DEVOLVIDAS') {
             $query->where('saldo_devedor', '=', 0);
         }
 
-        $itensModel = $query
-            ->orderBy(
-                NotaFiscal::select('emissao')
-                    ->whereColumn('notas_fiscais.id', 'nota_fiscal_itens.nota_fiscal_id')
-            )
+        $itens = $query
+            ->orderBy('nota_fiscal_id')
             ->get();
 
-        $clienteModel = $itensModel->first()?->notaFiscal?->cliente;
+        $cliente = null;
 
-        $cliente = [
-            'nome_razaosocial' => $clienteModel->nome_razaosocial ?? '',
-            'sobrenome_nomefantasia' => $clienteModel->sobrenome_nomefantasia ?? '',
-            'cpf_cnpj' => Formatters::cpfCnpj($clienteModel->cpf_cnpj ?? ''),
-            'telefone' => Formatters::telefone($clienteModel->telefone ?? ''),
-            'email' => $clienteModel->email ?? '',
-            'bairro' => $clienteModel->bairro ?? '',
-            'cidade' => $clienteModel->cidade ?? '',
-            'uf' => $clienteModel->uf ?? '',
+        if ($request->cliente_id) {
+            $c = Cliente::findOrFail($request->cliente_id);
+            $cliente = [
+                'nome_razaosocial' => $c->nome_razaosocial,
+                'sobrenome_nomefantasia' => $c->sobrenome_nomefantasia,
+                'cpf_cnpj' => Formatters::cpfCnpj($c->cpf_cnpj),
+                'telefone' => Formatters::telefone($c->telefone),
+                'email' => $c->email,
+            ];
+        }
+
+        // =========================
+        // TOTAIS (SEM LOOP MANUAL)
+        // =========================
+        $totais = (object)[
+            'quantidade' => $itens->count(),
+            'faturado' => $itens->sum('faturado'),
+            'saldo_devedor' => $itens->sum('saldo_devedor'),
         ];
 
-        $itens = $itensModel->map(function (NotaFiscalItem $item) {
-            return [
-                'nf'            => $item->notaFiscal->nota_fiscal,
-                'serie'         => $item->notaFiscal->serie,
-                'numero'        => $item->nota_fiscal_id,
-                'codigo'        => $item->material->codigo ?? '',
-                'produto'       => $item->material->descricao ?? '',
-                'status'        => $item->saldo_devedor > 0 ? 'PENDENTE' : 'DEVOLVIDA',
-                'faturado'      => $item->faturado,
-                'saldo_devedor' => $item->saldo_devedor,
-            ];
-        });
-
-        // PDF
-        $logotipo = $this->loadImageAsBase64(
-            storage_path('app/images/platoflex.png')
-        );
-
-        $pdf = Pdf::loadView('relatorios.relatorio-por-cliente', [
-            'logotipo' => $logotipo,
-            'titulo' => 'RELATÓRIO DE SUCATAS POR CLIENTE',
-            'cliente' => $cliente,
-            'itens' => $itens,
-            'total' => [
-                'quantidade' => $itens->count(),
-                'saldo_devedor' => $itens->sum('saldo_devedor'),
-                'faturado' => $itens->sum('faturado'),
-            ],
-            'data'     => Carbon::now()->format('d/m/Y'),
-            'hora'     => Carbon::now()->format('H:i'),
+        // =========================
+        // mPDF
+        // =========================
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'margin_left' => 5,
+            'margin_right' => 5,
+            'margin_top' => 5,
+            'margin_bottom' => 10,
+            'tempDir' => storage_path('app/mpdf'),
         ]);
 
-        $pdf->setOptions(['enable_php' => true]);
+        $mpdf->WriteHTML(
+            view('relatorios.header', [
+                'logotipo' => $this->loadImageAsBase64(storage_path('app/images/platoflex.png')),
+                'data' => Carbon::now()->format('d/m/Y'),
+                'hora' => Carbon::now()->format('H:i'),
+                'cliente' => $cliente,
+            ])->render()
+        );
+
+        $itens->chunk(200)->each(function ($chunk) use ($totais, $mpdf) {
+            $mpdf->WriteHTML(
+                view('relatorios.table', ['itens' => $chunk, 'totais' => $totais])->render()
+            );
+        });
+
+        $mpdf->WriteHTML(
+            view('relatorios.footer', compact('cliente'))->render()
+        );
 
         return response(
-            $pdf->setPaper('A4')->output(),
+            $mpdf->Output('relatorio.pdf', 'S'),
             200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="relatorio-por-cliente.pdf"',
-            ]
+            ['Content-Type' => 'application/pdf']
         );
     }
 

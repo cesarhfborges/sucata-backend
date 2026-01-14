@@ -5,6 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $nome_razaosocial
+ * @property string $sobrenome_nomefantasia
+ * @property string $cpf_cnpj
+ * @property string $telefone
+ * @property string $email
+ */
 class Cliente extends Model
 {
 
