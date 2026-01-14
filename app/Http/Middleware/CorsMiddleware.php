@@ -10,6 +10,7 @@ class CorsMiddleware
     private array $allowedOrigins = [
         'http://localhost:4200',
         'http://127.0.0.1:4200',
+        'https://sucata.chfb.com.br'
     ];
 
     public function handle($request, Closure $next)
