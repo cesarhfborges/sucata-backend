@@ -10,7 +10,7 @@ services:
       - ./:/var/www/html
 
     environment:
-      - APP_NAME="Lumen"
+      - APP_NAME=Lumen
       # ===== APP =====
 #      - 'APP_NAME="Lumen"'
 #      - 'APP_ENV: "development"'
