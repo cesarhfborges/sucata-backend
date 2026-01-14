@@ -10,6 +10,7 @@ services:
       - ./:/var/www/html
 
     environment:
+      - APP_NAME="Lumen"
       # ===== APP =====
 #      - 'APP_NAME="Lumen"'
 #      - 'APP_ENV: "development"'
@@ -36,8 +37,8 @@ services:
 #      - 'QUEUE_CONNECTION: "sync"'
 
       # ===== JWT =====
-      - 'JWT_SECRET: "${SERVICE_BASE64_64_KEY}"'
-      - 'JWT_ALGO: "HS256"'
+#      - 'JWT_SECRET: "${SERVICE_BASE64_64_KEY}"'
+#      - 'JWT_ALGO: "HS256"'
 
     depends_on:
       - db
