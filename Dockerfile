@@ -34,9 +34,14 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 # Permissões
-RUN mkdir -p storage bootstrap/cache \
-    && chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 storage bootstrap/cache
+RUN mkdir -p \
+    storage/logs \
+    storage/framework/cache \
+    storage/framework/views \
+    bootstrap/cache \
+    && chown -R www-data:www-data storage \
+    && chmod -R 775 storage storage/cache
+
 
 EXPOSE 80
 
