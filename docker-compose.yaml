@@ -35,6 +35,13 @@ services:
       - 'JWT_SECRET=${SERVICE_BASE64_64_SECRET}'
       - 'JWT_ALGO=${JWT_ALGO:-HS256}'
 
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://127.0.0.1:80" ]
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 2m
+
     depends_on:
       - db
 
@@ -66,6 +73,13 @@ services:
 
     networks:
       - lumen_net
+
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "mysql", "--silent" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 networks:
   lumen_net:
