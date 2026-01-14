@@ -15,7 +15,7 @@ services:
       - 'APP_ENV=${APP_ENV:-production}'
       - 'APP_DEBUG=${APP_DEBUG:-false}'
       - 'APP_KEY=${APP_KEY:-${SERVICE_BASE64_64_APP_KEY}}'
-      - 'APP_URL=${APP_URL:-${SERVICE_FQDN_CALLDESK}}'
+      - 'APP_URL=${APP_URL:-${SERVICE_FQDN_SUCATA}}'
       - 'APP_TIMEZONE=${APP_TIMEZONE:-America/Sao_Paulo'
 
     # ===== APP =====
