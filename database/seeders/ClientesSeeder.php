@@ -12,6 +12,8 @@ class ClientesSeeder extends Seeder
      */
     public function run(): void
     {
-        Cliente::factory()->count(1000)->create();
+        if (app()->environment('local', 'development')) {
+            Cliente::factory()->count(1000)->create();
+        }
     }
 }
