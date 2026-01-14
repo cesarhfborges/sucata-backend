@@ -36,12 +36,10 @@ RUN composer install --no-dev --optimize-autoloader
 # Permissões
 RUN mkdir -p \
     storage/logs \
-    storage/apps \
     storage/framework/cache \
     storage/framework/views \
-    bootstrap/cache \
     && chown -R www-data:www-data storage \
-    && chmod -R 775 storage storage/cache
+    && chmod -R 775 storage storage/logs storage/framework/cache storage/framework/views storage/app
 
 
 EXPOSE 80
