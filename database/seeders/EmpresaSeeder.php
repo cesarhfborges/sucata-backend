@@ -17,19 +17,37 @@ class EmpresaSeeder extends Seeder
         $faker = Faker\Factory::create();
 
         $empresas = [
-            'Recopeças Industrial',
-            'Aldeny Maria Barbosa',
-            'SAT',
-            'Platomix',
-            'Capital',
-            'Embreagens Central',
+            [
+                'nome' => 'Recopeças Industrial',
+                'cnpj' => '36763985000154',
+            ],
+            [
+                'nome' => 'Aldeny Maria Barbosa',
+                'cnpj' => '69892970000145',
+            ],
+            [
+                'nome' => 'SAT',
+                'cnpj' => '52101586000184',
+            ],
+            [
+                'nome' => 'Platomix',
+                'cnpj' => '38500951000100',
+            ],
+            [
+                'nome' => 'Capital',
+                'cnpj' => '63032851000136',
+            ],
+            [
+                'nome' => 'Embreagens Central',
+                'cnpj' => '57663035000128',
+            ],
         ];
 
-        foreach ($empresas as $nome) {
+        foreach ($empresas as $empresa) {
             Empresa::create([
-                'razao_social' => $nome,
+                'razao_social' => $empresa['nome'],
+                'cnpj' => $empresa['cnpj'],
                 'nome_fantasia' => 'Platoflex embreagens',
-                'cnpj' => $faker->numerify('########') . "0001" . $faker->numerify('##'),
                 'cep' => '71990006',
                 'logradouro' => 'ADE Conjunto 22 lote 32',
                 'numero' => '32',
