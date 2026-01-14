@@ -4,10 +4,10 @@ services:
     container_name: sucata
     restart: unless-stopped
 
-    working_dir: /var/www/html
-
-    volumes:
-      - ./:/var/www/html
+#    working_dir: /var/www/html
+#
+#    volumes:
+#      - ./:/var/www/html
 
     environment:
       - SERVICE_FQDN_SUCATA_80
