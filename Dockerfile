@@ -1,0 +1,42 @@
+FROM php:8.2-fpm
+
+# Diretório de trabalho
+WORKDIR /var/www/html
+
+# Dependências do sistema
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libzip-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libonig-dev \
+    libxml2-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Extensões PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install \
+        pdo \
+        pdo_mysql \
+        mbstring \
+        zip \
+        gd
+
+# Composer (oficial)
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copia o projeto
+COPY . .
+
+# Instala dependências do Laravel/Lumen
+RUN composer install --no-dev --optimize-autoloader
+
+# Permissões
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage bootstrap/cache
+
+EXPOSE 80
+
+CMD ["php-fpm"]
