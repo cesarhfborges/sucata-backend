@@ -38,12 +38,19 @@ class AuthController extends Controller
         $ttlEmMinutos = Auth::factory()->getTTL();
         $expiresAt = Carbon::now()->addMinutes($ttlEmMinutos);
 
-        $ATUAL = Carbon::now();
-
         return response()->json([
             'token' => $token,
             'token_type' => 'bearer',
             'expires_at' => $expiresAt->format('Y-m-d\TH:i:s')
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        return response()->json([
+            'message' => 'Logout realizado com sucesso'
         ]);
     }
 }

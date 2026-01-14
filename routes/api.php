@@ -22,6 +22,9 @@ $router->group([
     'middleware' => 'auth:api',
 ], function () use ($router) {
 
+    $router->post('logout', 'AuthController@logout');
+
+
     $router->get('perfil', 'PerfilController@perfil');
     $router->put('perfil', 'PerfilController@updatePerfil');
 
