@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\NotaFiscal;
-use App\Models\NotaFiscalItem;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
 
