@@ -36,6 +36,7 @@ RUN composer install --no-dev --optimize-autoloader
 # Permissões
 RUN mkdir -p \
     storage/logs \
+    storage/apps \
     storage/framework/cache \
     storage/framework/views \
     bootstrap/cache \
