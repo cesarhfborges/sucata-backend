@@ -16,9 +16,10 @@ class CorsMiddleware
     public function handle($request, Closure $next)
     {
         $origin = $request->headers->get('Origin');
-        $allowOrigin = in_array($origin, $this->allowedOrigins, true)
-            ? $origin
-            : '';
+        $allowOrigin = '';
+        if (in_array($origin, $this->allowedOrigins, true)) {
+            $allowOrigin = $origin;
+        }
 
         $headers = [
             'Access-Control-Allow-Origin' => $allowOrigin,
