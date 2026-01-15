@@ -39,6 +39,8 @@ COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 # ============================
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+USER www-data
+
 # ============================
 # Copia o projeto
 # ============================
@@ -63,6 +65,5 @@ RUN mkdir -p \
     && chown -R www-data:www-data storage \
     && chmod -R 775 storage storage/logs storage/framework/cache storage/framework/views storage/app
 
-USER www-data
 
 CMD ["php-fpm"]
