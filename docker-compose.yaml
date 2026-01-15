@@ -4,6 +4,9 @@ services:
     container_name: nginx
     restart: unless-stopped
 
+    labels:
+      - coolify.service.subType=service
+
     environment:
       - SERVICE_FQDN_NGINX
 
@@ -29,6 +32,9 @@ services:
     restart: unless-stopped
 
     working_dir: /var/www/html
+
+    labels:
+      - coolify.service.subType=application
 
     volumes:
       - './storage:/var/www/html/storage'
@@ -73,6 +79,9 @@ services:
     image: mariadb:11
     container_name: db
     restart: unless-stopped
+
+    labels:
+      - coolify.service.subType=database
 
     environment:
       - 'MARIADB_ROOT_PASSWORD=${SERVICE_PASSWORD_MARIADBROOT}'
