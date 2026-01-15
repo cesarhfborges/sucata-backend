@@ -102,7 +102,7 @@ services:
       - lumen_net
 
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "mysql", "--silent" ]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 5s
       timeout: 5s
       retries: 5
