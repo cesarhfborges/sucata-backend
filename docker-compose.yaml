@@ -10,6 +10,7 @@ services:
       - './storage:/var/www/html/storage'
 
     environment:
+      - SERVICE_URL_APP
       - 'APP_NAME=${APP_NAME:-SUCATA}'
       - 'APP_DEBUG=${APP_DEBUG:-false}'
       - 'APP_KEY=${SERVICE_BASE64_64_KEY}'
