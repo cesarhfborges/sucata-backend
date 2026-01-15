@@ -8,6 +8,7 @@ WORKDIR /var/www/html
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
+    procps \
     libzip-dev \
     libpng-dev \
     libjpeg-dev \
