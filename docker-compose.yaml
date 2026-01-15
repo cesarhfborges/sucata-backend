@@ -53,7 +53,7 @@ services:
     restart: unless-stopped
 
     environment:
-      - SERVICE_URL_APP
+      - SERVICE_FQDN_NGINX_80=sucata-api.ddd.com.br
 
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
