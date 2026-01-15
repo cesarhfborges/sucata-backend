@@ -34,11 +34,10 @@ services:
       - 'JWT_ALGO=${JWT_ALGO:-HS256}'
 
     healthcheck:
-      test: [ "CMD", "curl", "--fail", "http://127.0.0.1:9000" ]
-      interval: 1m
+      test: [ "CMD", "pgrep", "-f", "php-fpm" ]
+      interval: 30s
       timeout: 5s
-      retries: 5
-      start_period: 2m
+      retries: 3
 
     depends_on:
       - db
