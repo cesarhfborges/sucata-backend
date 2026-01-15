@@ -13,7 +13,7 @@ services:
       - 'APP_NAME=${APP_NAME:-SUCATA}'
       - 'APP_DEBUG=${APP_DEBUG:-false}'
       - 'APP_KEY=${SERVICE_BASE64_64_KEY}'
-      - 'APP_URL=${SERVICE_URL_APP}'
+      - 'APP_URL=${SERVICE_URL_NGINX}'
       - 'APP_TIMEZONE=${APP_TIMEZONE:-America/Sao_Paulo}'
       - 'APP_LOCALE=${APP_LOCALE:-pt-BR}'
 
