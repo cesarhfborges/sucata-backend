@@ -5,8 +5,7 @@ services:
     restart: unless-stopped
 
     labels:
-      - coolify.type=service
-      - coolify.service.subType=service
+      - coolify.application.subType=service
 
     environment:
       - SERVICE_FQDN_NGINX
@@ -35,8 +34,7 @@ services:
     working_dir: /var/www/html
 
     labels:
-      - coolify.type=service
-      - coolify.service.subType=application
+      - coolify.application.subType=application
 
     volumes:
       - './storage:/var/www/html/storage'
@@ -83,8 +81,7 @@ services:
     restart: unless-stopped
 
     labels:
-      - coolify.type=service
-      - coolify.service.subType=database
+      - coolify.application.subType=database
 
     environment:
       - 'MARIADB_ROOT_PASSWORD=${SERVICE_PASSWORD_MARIADBROOT}'
