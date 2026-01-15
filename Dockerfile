@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.2-fpm
 
 WORKDIR /var/www/html
 
@@ -25,18 +25,14 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         pdo_mysql \
         mbstring \
         zip \
-        gd
+        gd \
+        opcache
+
 
 # ============================
-# Apache: habilitar mod_rewrite
+# Config OPCACHE
 # ============================
-RUN a2enmod rewrite
-
-# ============================
-# Ajustar DocumentRoot para /public
-# ============================
-RUN sed -ri 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf \
-    && sed -ri 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 # ============================
 # Composer (oficial)
@@ -46,7 +42,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # ============================
 # Copia o projeto
 # ============================
-COPY . .
+COPY --chown=www-data:www-data . .
 
 # ============================
 # Instala dependências PHP
@@ -67,12 +63,6 @@ RUN mkdir -p \
     && chown -R www-data:www-data storage \
     && chmod -R 775 storage storage/logs storage/framework/cache storage/framework/views storage/app
 
-# ============================
-# Expor porta
-# ============================
-EXPOSE 80
+USER www-data
 
-# ============================
-# Start Apache
-# ============================
-CMD ["apache2-foreground"]
+CMD ["php-fpm"]
