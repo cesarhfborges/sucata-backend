@@ -137,7 +137,10 @@ class RelatoriosController extends Controller
         return response(
             $mpdf->Output('relatorio.pdf', 'S'),
             200,
-            ['Content-Type' => 'application/pdf']
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="relatorio.pdf"',
+            ]
         );
     }
 

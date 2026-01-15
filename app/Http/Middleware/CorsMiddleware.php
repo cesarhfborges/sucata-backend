@@ -15,30 +15,30 @@ class CorsMiddleware
 
     public function handle($request, Closure $next)
     {
-        $origin = $request->headers->get('Origin');
-        $allowOrigin = '';
-        if (in_array($origin, $this->allowedOrigins, true)) {
-            $allowOrigin = $origin;
+        $origin = null;
+
+        if (in_array($request->headers->get('Origin'), $this->allowedOrigins, true)) {
+            $origin = $request->headers->get('Origin');
         }
 
         $headers = [
-            'Access-Control-Allow-Origin' => $allowOrigin,
+            'Access-Control-Allow-Origin' => $origin,
             'Access-Control-Allow-Methods' => 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
             'Access-Control-Allow-Credentials' => 'true',
             'Access-Control-Max-Age' => '86400',
-            'Access-Control-Allow-Headers' => 'Authorization, Content-Type, Accept, X-Requested-With, responseType',
+            'Access-Control-Allow-Headers' => 'Authorization, Content-Type, Accept, X-Requested-With',
             'Access-Control-Expose-Headers' => 'Content-Disposition, Content-Type, Content-Length',
         ];
 
-        if ($request->isMethod('OPTIONS')) {
-            return response([], 204, $headers);
+        if ($request->getMethod() === 'OPTIONS') {
+            return response('', 204)->withHeaders(array_filter($headers));
         }
 
         $response = $next($request);
 
         foreach ($headers as $key => $value) {
-            if ($value !== '') {
-                $response->header($key, $value);
+            if ($value !== null) {
+                $response->headers->set($key, $value);
             }
         }
 
