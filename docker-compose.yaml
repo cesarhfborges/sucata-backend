@@ -1,45 +1,16 @@
 services:
-  nginx:
-    image: nginx:1.25-alpine
-    container_name: nginx
-    restart: unless-stopped
-    labels:
-      - coolify.managed=true
-      - coolify.environmentName=production
-      - coolify.type=service
-      - coolify.service.subType=application
-
-    volumes:
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-
-    healthcheck:
-      test: [ "CMD", "curl", "--fail", "http://127.0.0.1:80" ]
-      interval: 1m
-      timeout: 5s
-      retries: 5
-      start_period: 2m
-
-    depends_on:
-      - app
-
-    networks:
-      - lumen_net
-  sucata:
+  app:
     build: .
-    container_name: sucata
+    container_name: sucata_app
     restart: unless-stopped
 
     working_dir: /var/www/html
-
-    labels:
-      - coolify.managed=true
-      - coolify.environmentName=production
-      - coolify.type=service
 
     volumes:
       - './storage:/var/www/html/storage'
 
     environment:
+      - SERVICE_FQDN_SUCATA_80
       - 'APP_NAME=${APP_NAME:-SUCATA}'
       - 'APP_DEBUG=${APP_DEBUG:-false}'
       - 'APP_KEY=${SERVICE_BASE64_64_KEY}'
@@ -76,16 +47,34 @@ services:
     networks:
       - lumen_net
 
-  database:
-    image: mariadb:11
-    container_name: database
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: sucata_nginx
     restart: unless-stopped
 
-    labels:
-      - coolify.managed=true
-      - coolify.type=service
-      - coolify.environmentName=production
-      - coolify.service.subType=database
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://127.0.0.1:80" ]
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 2m
+
+    depends_on:
+      - app
+
+    ports:
+      - "80:80"
+
+    networks:
+      - lumen_net
+
+  db:
+    image: mariadb:11
+    container_name: lumen_db
+    restart: unless-stopped
 
     environment:
       - 'MARIADB_ROOT_PASSWORD=${SERVICE_PASSWORD_MARIADBROOT}'
