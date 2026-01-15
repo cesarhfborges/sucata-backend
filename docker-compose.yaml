@@ -52,7 +52,7 @@ services:
     restart: unless-stopped
 
     environment:
-      - SERVICE_FQDN_NGINX_80
+      - SERVICE_URL_APP
 
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
