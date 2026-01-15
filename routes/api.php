@@ -92,6 +92,4 @@ $router->group([
     $router->group(['prefix' => 'relatorios'], function () use ($router) {
         $router->post('por-cliente', 'RelatoriosController@porCliente');
     });
-
-
 });

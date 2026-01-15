@@ -122,7 +122,7 @@ $app->router->group([
 
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
-    'prefix' => 'api', // Opcional: adiciona /api na URL
+    'prefix' => 'api',
 ], function ($router) use ($app) {
     // Força o guard api para as rotas deste arquivo
     $app->make('auth')->shouldUse('api');
