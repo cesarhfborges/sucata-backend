@@ -92,4 +92,9 @@ $router->group([
     $router->group(['prefix' => 'relatorios'], function () use ($router) {
         $router->post('por-cliente', 'RelatoriosController@porCliente');
     });
+
+    $router->group(['prefix' => 'logs'], function () use ($router) {
+        $router->get('/', 'LogController@index');
+        $router->get('{date}', 'LogController@show');
+    });
 });
