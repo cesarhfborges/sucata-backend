@@ -1,7 +1,6 @@
 services:
   nginx:
     image: nginx:1.25-alpine
-    container_name: nginx
     restart: unless-stopped
 
     labels:
@@ -28,7 +27,6 @@ services:
 
   app:
     build: .
-    container_name: app
     restart: unless-stopped
 
     working_dir: /var/www/html
@@ -77,7 +75,6 @@ services:
 
   db:
     image: mariadb:11
-    container_name: db
     restart: unless-stopped
 
     labels:
