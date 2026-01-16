@@ -20,7 +20,8 @@ services:
       start_period: 2m
 
     depends_on:
-      - app
+      app:
+        condition: service_healthy
 
     networks:
       - lumen_net
@@ -34,7 +35,6 @@ services:
     labels:
       - coolify.application.subType=application
 
-    user: "1000:1000"
     volumes:
       - app_storage:/var/www/html/storage
 
@@ -69,7 +69,8 @@ services:
       retries: 3
 
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
     networks:
       - lumen_net
