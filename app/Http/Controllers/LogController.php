@@ -76,6 +76,7 @@ class LogController extends Controller
         );
 
         foreach ($blocks as $block) {
+
             if (!preg_match(
                 '/^\[(.*?)\]\s+(\w+)\.(\w+):\s+(.*)$/s',
                 $block,
@@ -90,29 +91,40 @@ class LogController extends Controller
             $rawMessage  = trim($matches[4]);
 
             // Remove stacktrace completamente
-            $cleanMessage = preg_split('/\n\[stacktrace\]/', $rawMessage)[0];
+            $rawMessage = preg_split('/\n\[stacktrace\]/', $rawMessage)[0];
+
+            $message = $rawMessage;
+            $body = null;
+
+            /**
+             * Se existir JSON no final da mensagem,
+             * separa message e body
+             */
+            if (preg_match('/^(.*?)(\s+\{.*\})$/s', $rawMessage, $jsonMatch)) {
+                $message = trim($jsonMatch[1]);
+                $body    = trim($jsonMatch[2]);
+            }
 
             // Normaliza espaços
-            $cleanMessage = trim(preg_replace('/\s+/', ' ', $cleanMessage));
-
-            // Monta a mensagem final
-            $message = sprintf(
-                '%s.%s: %s',
-                $environment,
-                strtoupper($level),
-                $cleanMessage
-            );
+            $message = trim(preg_replace('/\s+/', ' ', $message));
 
             $entries[] = [
                 'timestamp'   => $timestamp,
                 'environment' => $environment,
                 'level'       => $level,
-                'message'     => $message
+                'message'     => sprintf(
+                    '%s.%s: %s',
+                    $environment,
+                    strtoupper($level),
+                    $message
+                ),
+                'body'        => $body
             ];
         }
 
         return $entries;
     }
+
 
     /**
      * Extrai data do nome do arquivo lumen-YYYY-MM-DD.log
