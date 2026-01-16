@@ -35,7 +35,6 @@ services:
     labels:
       - coolify.application.subType=application
 
-    user: "1000:1000"
     volumes:
       - app_storage:/var/www/html/storage
 
