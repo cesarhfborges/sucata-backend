@@ -61,10 +61,10 @@ class Handler extends ExceptionHandler
         Log::error($e->getMessage(), [
             'type' => 'database.error',
             'ip' => $request->getClientIp(),
-            'info' => $e->errors(),
             'url' => $request->url(),
             'method' => $request->method(),
             'body' => $request->all(),
+            'info' => $e->errors(),
             'user_agent' => $request->userAgent()
         ]);
 
