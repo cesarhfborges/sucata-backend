@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class AuthController extends Controller
@@ -28,12 +27,6 @@ class AuthController extends Controller
         }
 
         if (!$token = Auth::attempt($credentials)) {
-            Log::warning('Falha de login para o usuário informado', [
-                'type' => 'auth.failed',
-                'email' => $request->input('email'),
-                'ip' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-            ]);
             throw new UnauthorizedHttpException('Bearer', __('auth.failed'));
         }
 
