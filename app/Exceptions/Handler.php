@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -57,6 +58,16 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e): JsonResponse
     {
+        Log::error($e->getMessage(), [
+            'type' => 'database.error',
+            'ip' => $request->getClientIp(),
+            'info' => $e->errors(),
+            'url' => $request->url(),
+            'method' => $request->method(),
+            'body' => $request->all(),
+            'user_agent' => $request->userAgent()
+        ]);
+
         // Tratamento para Credenciais Inválidas (Lançada no Controller)
         if ($e instanceof UnauthorizedHttpException) {
             return new JsonResponse([
@@ -107,6 +118,7 @@ class Handler extends ExceptionHandler
             $errorCode = $e->errorInfo[1] ?? null;
 
             if ($sqlState === '23000' && $errorCode === 1062) {
+
                 return new JsonResponse([
                     'error'   => 'Registro duplicado.',
                     'message' => 'Já existe um registro com os mesmos dados cadastrados.'
