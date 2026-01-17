@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\SerializesDatesToLocalTimezone;
 use App\Traits\TracksUserActions;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class NotaFiscalItem extends Model
 {
-    use HasFactory, TracksUserActions;
+    use HasFactory, TracksUserActions, SerializesDatesToLocalTimezone;
 
     /**
      * O nome da tabela associada ao modelo.

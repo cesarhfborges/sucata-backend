@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\SerializesDatesToLocalTimezone;
 use App\Traits\TracksUserActions;
 use DateTime;
 use Illuminate\Auth\Authenticatable;
@@ -24,7 +25,7 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
-    use Authenticatable, Authorizable, HasFactory, TracksUserActions, SoftDeletes;
+    use Authenticatable, Authorizable, HasFactory, TracksUserActions, SoftDeletes, SerializesDatesToLocalTimezone;
 
     protected $table = 'users';
 
