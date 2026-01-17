@@ -6,6 +6,7 @@ use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Material;
 use App\Models\NotaFiscal;
+use App\Models\User;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,8 @@ class NotaFiscalFactory extends Factory
 
     public function definition(): array
     {
+        $users = User::pluck('id')->all();
+        $user = $this->faker->randomElement($users);
         return [
             'empresa_id' => function () {
                 $empresa = Empresa::inRandomOrder()->first() ?? Empresa::factory()->create();
@@ -30,6 +33,9 @@ class NotaFiscalFactory extends Factory
             'nota_fiscal' => $this->faker->unique()->numberBetween(1000, 999999),
             'serie' => $this->faker->numberBetween(1, 10),
             'emissao' => $this->faker->dateTimeBetween('-1 year', 'now'),
+
+            'created_by' => $user,
+            'updated_by' => $user,
         ];
     }
 

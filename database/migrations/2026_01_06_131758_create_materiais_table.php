@@ -12,10 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('materiais', function (Blueprint $table) {
+
             $table->string('codigo', 100)->primary();
             $table->string('descricao', 250)->nullable(false);
             $table->string('un', 3);
+
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
+
             $table->timestamps();
+
+            $table->index('created_by');
+            $table->index('updated_by');
 
             $table->index('descricao', 'idx_material_descricao');
         });

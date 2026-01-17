@@ -45,6 +45,11 @@ class EmpresasController extends Controller
 
         $empresa = Empresa::create($request->all());
 
+        $empresa->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
+
         // 3. Retorno com Status 201 (Created)
         return response()->json($empresa, 201);
     }
@@ -58,6 +63,10 @@ class EmpresasController extends Controller
     public function show(int $id): JsonResponse
     {
         $empresa = Empresa::findOrFail($id);
+        $empresa->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
         return response()->json($empresa, 200);
     }
 
@@ -92,6 +101,11 @@ class EmpresasController extends Controller
 
         $empresa->fill($request->all());
         $empresa->save();
+
+        $empresa->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($empresa, 200);
     }

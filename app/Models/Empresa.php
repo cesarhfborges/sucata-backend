@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\TracksUserActions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Empresa extends Model
 {
-    use HasFactory;
+    use HasFactory, TracksUserActions;
 
     protected $table = 'empresas';
 
@@ -33,4 +35,19 @@ class Empresa extends Model
         'created_at' => 'datetime:Y-m-d\TH:i:s',
         'updated_at' => 'datetime:Y-m-d\TH:i:s',
     ];
+
+    protected $hidden = [
+        'created_by',
+        'updated_by',
+    ];
+
+    public function criadoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function atualizadoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

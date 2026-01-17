@@ -73,6 +73,11 @@ class MateriaisController extends Controller
             'un'        => $request->input('un'),
         ]);
 
+        $material->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
+
         return response()->json($material, 201);
     }
 
@@ -85,6 +90,11 @@ class MateriaisController extends Controller
     public function show(string $id): JsonResponse
     {
         $material = Material::findOrFail($id);
+
+        $material->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($material, 200);
     }
@@ -116,6 +126,11 @@ class MateriaisController extends Controller
             'codigo'    => $request->input('codigo'),
             'descricao' => $request->input('descricao'),
             'un'        => $request->input('un'),
+        ]);
+
+        $material->load([
+            'criadoPor',
+            'atualizadoPor',
         ]);
 
         return response()->json($material, 200);

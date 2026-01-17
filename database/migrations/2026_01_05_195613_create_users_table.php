@@ -23,8 +23,16 @@ return new class extends Migration
             $table->boolean('ativo')->default(false);
             $table->dateTime('ult_acesso')->nullable();
 
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->unsignedBigInteger('deleted_by')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('created_by');
+            $table->index('updated_by');
+            $table->index('deleted_by');
         });
     }
 

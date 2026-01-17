@@ -56,6 +56,11 @@ class UsuariosController extends Controller
 
         $user->save();
 
+        $user->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
+
         return response()->json($user, 201);
     }
 
@@ -67,8 +72,12 @@ class UsuariosController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $empresa = User::findOrFail($id);
-        return response()->json($empresa, 200);
+        $user = User::findOrFail($id);
+        $user->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
+        return response()->json($user, 200);
     }
 
     /**
@@ -98,6 +107,11 @@ class UsuariosController extends Controller
         }
 
         $user->save();
+
+        $user->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($user, 200);
     }

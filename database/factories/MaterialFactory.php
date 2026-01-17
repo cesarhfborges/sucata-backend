@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Material;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MaterialFactory extends Factory
@@ -21,10 +22,14 @@ class MaterialFactory extends Factory
      */
     public function definition(): array
     {
+        $users = User::pluck('id')->all();
+        $user = $this->faker->randomElement($users);
         return [
             'codigo'    => $this->randomCodigo(),
             'descricao' => $this->faker->words(3, true),
             'un'        => $this->faker->randomElement(['UN', 'KG', 'LT', 'M2', 'CX']),
+            'created_by' => $user,
+            'updated_by' => $user,
         ];
     }
 

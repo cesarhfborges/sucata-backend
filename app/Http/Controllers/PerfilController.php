@@ -13,7 +13,12 @@ class PerfilController extends Controller
 {
     public function perfil()
     {
-        return response()->json(Auth::user());
+        $user = Auth::user();
+        $user->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
+        return response()->json($user, 200);
     }
 
     public function updatePerfil(Request $request)
@@ -41,6 +46,11 @@ class PerfilController extends Controller
         if ($user->isDirty()) {
             $user->save();
         }
+
+        $user->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($user);
     }

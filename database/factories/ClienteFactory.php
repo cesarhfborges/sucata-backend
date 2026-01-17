@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\Estados;
 use App\Models\Cliente;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ClienteFactory extends Factory
@@ -13,21 +14,8 @@ class ClienteFactory extends Factory
 
     public function definition(): array
     {
-//        return [
-//            'nome_razaosocial' => $this->faker->company(),
-//            'sobrenome_nomefantasia' => $this->faker->company(),
-//            'cpf_cnpj' => $this->faker->numerify('########')."0001".$this->faker->numerify('##'),
-//            'cep' => $this->faker->numerify('########'),
-//            'logradouro' => $this->faker->streetName(),
-//            'numero' => $this->faker->buildingNumber(),
-//            'complemento' => $this->faker->streetSuffix,
-//            'bairro' => $this->faker->citySuffix(),
-//            'cidade' => $this->faker->city(),
-//            'uf' => $this->faker->randomElement(Estados::values()),
-//            'telefone' => preg_replace('/[^0-9]/', '', $this->faker->phoneNumber()),
-//            'email' => $this->faker->unique()->companyEmail(),
-//            'observacoes' => $this->faker->sentence(),
-//        ];
+        $users = User::pluck('id')->all();
+        $user = $this->faker->randomElement($users);
 
         $dados = [
             'cep' => $this->faker->numerify('########'),
@@ -39,6 +27,8 @@ class ClienteFactory extends Factory
             'uf' => $this->faker->randomElement(Estados::values()),
             'telefone' => preg_replace('/\D/', '', $this->faker->phoneNumber()),
             'observacoes' => $this->faker->sentence(),
+            'created_by' => $user,
+            'updated_by' => $user,
         ];
 
         $isPessoaJuridica = $this->faker->boolean(50);

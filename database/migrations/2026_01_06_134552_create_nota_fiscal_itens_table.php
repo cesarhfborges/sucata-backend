@@ -20,19 +20,25 @@ return new class extends Migration
             $table->integer('faturado')->default(0);
             $table->integer('saldo_devedor')->default(0);
 
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
+
             $table->timestamps();
 
             $table->foreign('nota_fiscal_id')->references('id')->on('notas_fiscais');
             $table->foreign('material_id')->references('codigo')->on('materiais');
 
-            $table->unique(
-                ['nota_fiscal_id', 'material_id'],
-                'nota_fiscal_itens_nota_material_unique'
-            );
+            $table->index('created_by');
+            $table->index('updated_by');
 
             $table->index(
                 ['nota_fiscal_id', 'saldo_devedor'],
                 'idx_nfi_nota_saldo'
+            );
+
+            $table->unique(
+                ['nota_fiscal_id', 'material_id'],
+                'nota_fiscal_itens_nota_material_unique'
             );
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\TracksUserActions;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class NotaFiscalItem extends Model
 {
-    use HasFactory;
+    use HasFactory, TracksUserActions;
 
     /**
      * O nome da tabela associada ao modelo.
@@ -45,6 +46,11 @@ class NotaFiscalItem extends Model
         'updated_at' => 'datetime:Y-m-d\TH:i:s',
     ];
 
+    protected $hidden = [
+        'created_by',
+        'updated_by',
+    ];
+
     protected function pendente(): Attribute
     {
         return Attribute::get(
@@ -69,5 +75,15 @@ class NotaFiscalItem extends Model
     public function material(): BelongsTo
     {
         return $this->belongsTo(Material::class, 'material_id', 'codigo');
+    }
+
+    public function criadoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function atualizadoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

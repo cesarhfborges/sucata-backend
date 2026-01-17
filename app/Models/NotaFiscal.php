@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\TracksUserActions;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class NotaFiscal extends Model
 {
 
-    use HasFactory;
+    use HasFactory, TracksUserActions;
 
     protected $table = 'notas_fiscais';
 
@@ -33,6 +34,11 @@ class NotaFiscal extends Model
         'serie' => 'integer',
         'created_at' => 'datetime:Y-m-d\TH:i:s',
         'updated_at' => 'datetime:Y-m-d\TH:i:s',
+    ];
+
+    protected $hidden = [
+        'created_by',
+        'updated_by',
     ];
 
     public function empresa(): BelongsTo
@@ -63,5 +69,15 @@ class NotaFiscal extends Model
     public function itens(): HasMany
     {
         return $this->hasMany(NotaFiscalItem::class, 'nota_fiscal_id');
+    }
+
+    public function criadoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function atualizadoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

@@ -87,6 +87,11 @@ class ClientesController extends Controller
             'observacoes',
         ]));
 
+        $cliente->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
+
         return response()->json($cliente, 201);
     }
 
@@ -99,6 +104,11 @@ class ClientesController extends Controller
     public function show(int $id): JsonResponse
     {
         $cliente = Cliente::findOrFail($id);
+
+        $cliente->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($cliente, 200);
     }
@@ -152,6 +162,11 @@ class ClientesController extends Controller
             'email',
             'observacoes',
         ]));
+
+        $cliente->load([
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($cliente, 200);
     }

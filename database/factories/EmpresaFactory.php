@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\Estados;
 use App\Models\Empresa;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EmpresaFactory extends Factory
@@ -18,6 +19,10 @@ class EmpresaFactory extends Factory
      */
     public function definition(): array
     {
+        $users = User::pluck('id')->all();
+        $user = $this->faker->randomElement($users);
+
+
         return [
             'razao_social' => $this->faker->company(),
             'nome_fantasia' => $this->faker->company(),
@@ -32,6 +37,8 @@ class EmpresaFactory extends Factory
             'telefone' => $this->faker->phoneNumber(),
             'email' => $this->faker->unique()->companyEmail(),
             'observacoes' => $this->faker->sentence(),
+            'created_by' => $user,
+            'updated_by' => $user,
         ];
     }
 }

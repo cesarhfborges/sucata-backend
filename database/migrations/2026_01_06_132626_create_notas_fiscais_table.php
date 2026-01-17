@@ -22,19 +22,22 @@ return new class extends Migration
             $table->integer('serie');
             $table->date('emissao');
 
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
+
             $table->timestamps();
 
-            $table->foreign('empresa_id')->references('id')->on('empresas');
-            $table->foreign('cliente_id')->references('id')->on('clientes');
-
-            $table->unique(
-                ['empresa_id', 'nota_fiscal', 'serie'],
-                'notas_fiscais_empresa_nota_serie_unique'
-            );
+            $table->index('created_by');
+            $table->index('updated_by');
 
             $table->index(
                 ['empresa_id', 'cliente_id', 'emissao'],
                 'idx_nf_empresa_cliente_emissao'
+            );
+
+            $table->unique(
+                ['empresa_id', 'nota_fiscal', 'serie'],
+                'notas_fiscais_empresa_nota_serie_unique'
             );
         });
     }

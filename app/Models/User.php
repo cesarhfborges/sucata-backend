@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\TracksUserActions;
 use DateTime;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Lumen\Auth\Authorizable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
@@ -21,7 +24,7 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
-    use Authenticatable, Authorizable, HasFactory;
+    use Authenticatable, Authorizable, HasFactory, TracksUserActions, SoftDeletes;
 
     protected $table = 'users';
 
@@ -52,7 +55,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = [
         'password',
-        'deleted_at'
+        'deleted_at',
+        'deleted_by',
     ];
 
     public function getJWTIdentifier()
@@ -63,5 +67,20 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getJWTCustomClaims(): array
     {
         return [];
+    }
+
+    public function criadoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function atualizadoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function deletadoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }
