@@ -58,35 +58,24 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e): JsonResponse
     {
+        $context = [
+            'ip'         => $request->ip(),
+            'url'        => $request->fullUrl(),
+            'method'     => $request->method(),
+            'payload'    => $request->except([
+                'password',
+                'password_confirmation',
+                'confirmPassword',
+                'token',
+                'access_token'
+            ]),
+            'user_agent' => $request->userAgent(),
+        ];
         if ($e instanceof ValidationException) {
-            Log::error($e->getMessage(), [
-                'type' => 'database.error',
-                'ip' => $request->getClientIp(),
-                'url' => $request->url(),
-                'method' => $request->method(),
-                'body' => $request->all(),
-                'info' => $e->errors(),
-                'user_agent' => $request->userAgent()
-            ]);
-        } else {
-            Log::error($e->getMessage(), [
-                'type' => 'database.error',
-                'ip' => $request->getClientIp(),
-                'url' => $request->url(),
-                'method' => $request->method(),
-                'body' => $request->all(),
-                'user_agent' => $request->userAgent()
-            ]);
+            $context->validation = $e->errors();
         }
 
-        Log::error($e->getMessage(), [
-            'type' => 'database.error',
-            'ip' => $request->getClientIp(),
-            'url' => $request->url(),
-            'method' => $request->method(),
-            'body' => $request->all(),
-            'user_agent' => $request->userAgent()
-        ]);
+        Log::error($e->getMessage(), $context);
 
         // Tratamento para Credenciais Inválidas (Lançada no Controller)
         if ($e instanceof UnauthorizedHttpException) {
