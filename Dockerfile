@@ -66,5 +66,6 @@ RUN mkdir -p \
     && chown -R www-data:www-data storage \
     && chmod -R 775 storage storage/logs storage/framework/cache storage/framework/views storage/app
 
+EXPOSE 9000
 
 CMD ["php-fpm"]
