@@ -63,7 +63,11 @@ class NotaFiscalItensController extends Controller
             'saldo_devedor' => $request->input('saldo_devedor'),
         ]);
 
-        $item->load(['material']);
+        $item->load([
+            'material',
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($item, 201);
     }
@@ -80,6 +84,12 @@ class NotaFiscalItensController extends Controller
         $item = NotaFiscalItem::with(['material'])
             ->where('nota_fiscal_id', $id)
             ->findOrFail($itemId);
+
+        $item->load([
+            'material',
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($item, 200);
     }
@@ -126,7 +136,11 @@ class NotaFiscalItensController extends Controller
             'saldo_devedor' => $request->input('saldo_devedor'),
         ]);
 
-        $item->load(['material']);
+        $item->load([
+            'material',
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($item, 200);
     }
@@ -220,7 +234,11 @@ class NotaFiscalItensController extends Controller
         }
 
         $item->save();
-        $item->load(['material']);
+        $item->load([
+            'material',
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($item, 200);
     }

@@ -122,7 +122,7 @@ class LogController extends Controller
             ];
         }
 
-        return $entries;
+        return array_reverse($entries);
     }
 
 

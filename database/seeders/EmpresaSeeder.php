@@ -55,6 +55,8 @@ class EmpresaSeeder extends Seeder
                 'email' => 'contato@platoflex.com.br',
                 'telefone' => '6133992727',
                 'observacoes' => '',
+                'created_by' => 1,
+                'updated_by' => 1,
             ]);
         }
     }

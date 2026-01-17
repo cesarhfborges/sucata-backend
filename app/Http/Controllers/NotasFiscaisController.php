@@ -82,7 +82,12 @@ class NotasFiscaisController extends Controller
             'emissao' => $request->input('emissao')
         ]);
 
-        $notaFiscal->load(['empresa', 'cliente']);
+        $notaFiscal->load([
+            'empresa',
+            'cliente',
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($notaFiscal, 201);
     }
@@ -96,6 +101,13 @@ class NotasFiscaisController extends Controller
     public function show(int $id)
     {
         $notaFiscal = NotaFiscal::with(['empresa', 'cliente'])->findOrFail($id);
+
+        $notaFiscal->load([
+            'empresa',
+            'cliente',
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($notaFiscal, 200);
     }
@@ -134,7 +146,12 @@ class NotasFiscaisController extends Controller
             'emissao' => $request->input('emissao'),
         ]);
 
-        $notaFiscal->load(['empresa', 'cliente']);
+        $notaFiscal->load([
+            'empresa',
+            'cliente',
+            'criadoPor',
+            'atualizadoPor',
+        ]);
 
         return response()->json($notaFiscal, 200);
     }

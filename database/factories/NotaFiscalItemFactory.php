@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Material;
 use App\Models\NotaFiscal;
 use App\Models\NotaFiscalItem;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class NotaFiscalItemFactory extends Factory
@@ -23,6 +24,8 @@ class NotaFiscalItemFactory extends Factory
      */
     public function definition(): array
     {
+        $users = User::pluck('id')->all();
+        $user = $this->faker->randomElement($users);
         $faturado = $this->faker->numberBetween(1, 30);
         return [
             'nota_fiscal_id' => NotaFiscal::factory(),
@@ -32,6 +35,8 @@ class NotaFiscalItemFactory extends Factory
             },
             'faturado' => $faturado,
             'saldo_devedor' => $this->faker->numberBetween(0, $faturado),
+            'created_by' => $user,
+            'updated_by' => $user,
         ];
     }
 }

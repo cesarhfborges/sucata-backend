@@ -14,7 +14,6 @@ return new class extends Migration
     {
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
-//            $table->string('codigo')->primary()->unique();
 
             $table->string('nome_razaosocial', 200)->nullable(false);
             $table->string('sobrenome_nomefantasia', 200)->nullable(false);
@@ -33,7 +32,13 @@ return new class extends Migration
 
             $table->longText('observacoes')->nullable();
 
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
+
             $table->timestamps();
+
+            $table->index('created_by');
+            $table->index('updated_by');
 
             $table->index('nome_razaosocial', 'idx_cliente_nome');
             $table->index('sobrenome_nomefantasia', 'idx_cliente_fantasia');
