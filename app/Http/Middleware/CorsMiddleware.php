@@ -12,7 +12,7 @@ class CorsMiddleware
         'http://127.0.0.1:4200',
         'http://192.168.3.23:4200',
         'https://sucata.chfb.com.br',
-        'https://sucata-api.platoflex.com.br'
+        'https://sucata.platoflex.com.br'
     ];
 
     public function handle($request, Closure $next)
