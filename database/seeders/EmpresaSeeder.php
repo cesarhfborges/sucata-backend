@@ -20,11 +20,11 @@ class EmpresaSeeder extends Seeder
             ],
             [
                 'nome' => 'Aldeny Maria Barbosa',
-                'cnpj' => '69892970000145',
+                'cnpj' => '65874875000144',
             ],
             [
                 'nome' => 'SAT',
-                'cnpj' => '52101586000184',
+                'cnpj' => '65874875000100',
             ],
             [
                 'nome' => 'Platomix',
@@ -32,11 +32,11 @@ class EmpresaSeeder extends Seeder
             ],
             [
                 'nome' => 'Capital',
-                'cnpj' => '63032851000136',
+                'cnpj' => '63032851000100',
             ],
             [
                 'nome' => 'Embreagens Central',
-                'cnpj' => '57663035000128',
+                'cnpj' => '57663035000100',
             ],
         ];
 

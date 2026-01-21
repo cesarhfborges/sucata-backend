@@ -13,20 +13,44 @@ class UsuarioSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::create([
-            'nome' => 'Admin',
-            'sobrenome' => 'Sistema',
-            'email' => 'admin@admin.com',
-            'password' => Hash::make('@zyba.@'),
-            'ativo' => true,
-            'created_by' => 1,
-            'updated_by' => 1,
-        ]);
-        if (app()->environment('local', 'development')) {
-            User::factory()->count(3)->create([
-                'created_by' => $admin->id,
-                'updated_by' => $admin->id,
-            ]);
+        $usuarios = [
+            [
+                'nome' => 'Admin',
+                'sobrenome' => 'Sistema',
+                'email' => 'admin@admin.com',
+                'password' => Hash::make('@zyba.@'),
+                'ativo' => true,
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'nome' => 'Angela',
+                'sobrenome' => ' ',
+                'email' => 'angela@platoflex.com.br',
+                'password' => Hash::make('123456'),
+                'ativo' => true,
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'nome' => 'Silvia',
+                'sobrenome' => 'Helena',
+                'email' => 'silvia@platoflex.com.br',
+                'password' => Hash::make('123456'),
+                'ativo' => true,
+                'created_by' => 1,
+                'updated_by' => 1,
+            ]
+        ];
+
+        foreach ($usuarios as $usuario) {
+            User::create($usuario);
         }
+//        if (app()->environment('local', 'development')) {
+//            User::factory()->count(3)->create([
+//                'created_by' => $admin->id,
+//                'updated_by' => $admin->id,
+//            ]);
+//        }
     }
 }
