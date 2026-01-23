@@ -31,17 +31,17 @@
     </tr>
     </thead>
     <tbody>
-        @foreach($itens as $item)
-            <tr>
-                <td>{{ $item->notaFiscal->nota_fiscal }}</td>
-                <td>{{ $item->notaFiscal->serie }}</td>
-                <td>{{ $item->material->codigo }}</td>
-                <td>{{ $item->material->descricao }}</td>
-                <td>{{ $item->saldo_devedor > 0 ? 'PENDENTE' : 'DEVOLVIDA' }}</td>
-                <td align="right">{{ $item->faturado }}</td>
-                <td align="right">{{ $item->saldo_devedor }}</td>
-            </tr>
-        @endforeach
+    @foreach($itens as $item)
+        <tr>
+            <td>{{ $item->notaFiscal->nota_fiscal }}</td>
+            <td>{{ $item->notaFiscal->serie }}</td>
+            <td>{{ $item->material->codigo ?? 'Error' }}</td>
+            <td>{{ $item->material->descricao ?? 'Error'}}</td>
+            <td>{{ $item->saldo_devedor > 0 ? 'PENDENTE' : 'DEVOLVIDA' }}</td>
+            <td align="right">{{ $item->faturado }}</td>
+            <td align="right">{{ $item->saldo_devedor }}</td>
+        </tr>
+    @endforeach
     </tbody>
     <tfoot>
     <tr style="background:#f0f0f0">
