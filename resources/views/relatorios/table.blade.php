@@ -21,25 +21,25 @@
 <table class="table" width="100%" border="1" cellspacing="0" cellpadding="3">
     <thead>
     <tr style="background:#f0f0f0">
-        <th>NF</th>
-        <th>Série</th>
+        <th>NF-e</th>
+        <th style="width: 50px">Série</th>
         <th>Código</th>
         <th>Produto</th>
-        <th>Status</th>
-        <th>Faturado</th>
-        <th>Saldo</th>
+        <th style="width: 60px">Status</th>
+        <th style="width: 70px">Faturado</th>
+        <th style="width: 70px">Saldo</th>
     </tr>
     </thead>
     <tbody>
     @foreach($itens as $item)
         <tr>
-            <td>{{ $item->notaFiscal->nota_fiscal }}</td>
-            <td>{{ $item->notaFiscal->serie }}</td>
-            <td>{{ $item->material->codigo ?? 'Error' }}</td>
-            <td>{{ $item->material->descricao ?? 'Error'}}</td>
+            <td>{{ $item->notaFiscal->nota_fiscal ?? '' }}</td>
+            <td>{{ $item->notaFiscal->serie ?? ''}}</td>
+            <td>{{ $item->material->codigo ?? '' }}</td>
+            <td>{{ $item->material->descricao ?? ''}}</td>
             <td>{{ $item->saldo_devedor > 0 ? 'PENDENTE' : 'DEVOLVIDA' }}</td>
-            <td align="right">{{ $item->faturado }}</td>
-            <td align="right">{{ $item->saldo_devedor }}</td>
+            <td align="right">{{ $item->faturado ?? ''}}</td>
+            <td align="right">{{ $item->saldo_devedor ?? ''}}</td>
         </tr>
     @endforeach
     </tbody>
