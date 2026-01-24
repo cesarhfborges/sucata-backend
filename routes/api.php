@@ -15,6 +15,8 @@
 
 use Laravel\Lumen\Routing\Router;
 
+$router->get('health', 'StatusController@index');
+
 $router->post('login', 'AuthController@login');
 
 
