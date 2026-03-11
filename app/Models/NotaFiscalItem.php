@@ -87,4 +87,11 @@ class NotaFiscalItem extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    protected function materialId(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => strtoupper($value),
+        );
+    }
 }

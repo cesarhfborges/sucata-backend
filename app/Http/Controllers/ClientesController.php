@@ -33,8 +33,9 @@ class ClientesController extends Controller
 
         if ($filter) {
             $query->where(function ($q) use ($filter) {
-                $q->where('id', $filter)
-                    ->orWhere('cpf_cnpj', 'like', "%{$filter}%")
+                $numeric = preg_replace('/[^a-zA-Z0-9]/', '', $filter);
+                $q->where('id', 'like', $numeric)
+                    ->orWhere('cpf_cnpj', 'like', "%{$numeric}%")
                     ->orWhere('nome_razaosocial', 'like', "%{$filter}%")
                     ->orWhere('sobrenome_nomefantasia', 'like', "%{$filter}%");
             });

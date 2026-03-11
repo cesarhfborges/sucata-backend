@@ -40,6 +40,7 @@ class RelatoriosController extends Controller
         // =========================
         $query = NotaFiscalItem::query()
             ->select([
+                'nota_fiscal_itens.id',
                 'nota_fiscal_itens.nota_fiscal_id',
                 'nota_fiscal_itens.material_id',
                 'nota_fiscal_itens.faturado',
@@ -48,7 +49,7 @@ class RelatoriosController extends Controller
             ->with([
                 'material:codigo,descricao',
                 'notaFiscal:id,empresa_id,cliente_id,nota_fiscal,serie,emissao',
-                'notaFiscal.cliente:id,nome_razaosocial,sobrenome_nomefantasia,cpf_cnpj,telefone,email',
+//                'notaFiscal.cliente:id,nome_razaosocial,sobrenome_nomefantasia,cpf_cnpj,telefone,email',
             ])
             ->whereHas('notaFiscal', function ($q) use ($request) {
 
@@ -124,11 +125,23 @@ class RelatoriosController extends Controller
             ])->render()
         );
 
-        $itens->chunk(200)->each(function ($chunk) use ($totais, $mpdf) {
+        $viewName = $request->filled('cliente_id')
+            ? 'relatorios.table'
+            : 'relatorios.cliente-table';
+
+        $itensCollection = collect($itens);
+
+        if ($itensCollection->isEmpty()) {
             $mpdf->WriteHTML(
-                view('relatorios.table', ['itens' => $chunk, 'totais' => $totais])->render()
+                view($viewName, ['itens' => $itensCollection, 'totais' => $totais])->render()
             );
-        });
+        } else {
+            $itensCollection->chunk(200)->each(function ($chunk) use ($totais, $mpdf, $viewName) {
+                $mpdf->WriteHTML(
+                    view($viewName, ['itens' => $chunk, 'totais' => $totais])->render()
+                );
+            });
+        }
 
         $mpdf->WriteHTML(
             view('relatorios.footer', compact('cliente'))->render()

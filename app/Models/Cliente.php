@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $nome_razaosocial
  * @property string $sobrenome_nomefantasia
  * @property string $cpf_cnpj
+ * @property string $rg_inscricao
  * @property string $telefone
  * @property string $email
  */
@@ -26,6 +27,7 @@ class Cliente extends Model
         'nome_razaosocial',
         'sobrenome_nomefantasia',
         'cpf_cnpj',
+        'rg_inscricao',
         'cep',
         'logradouro',
         'numero',

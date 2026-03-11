@@ -108,12 +108,20 @@ class EstatisticasController extends Controller
     public function ultimasMovimentacoes(): JsonResponse
     {
         $movimentacoes = DB::table('nota_fiscal_itens')
+            ->join(
+                'notas_fiscais',
+                'notas_fiscais.id',
+                '=',
+                'nota_fiscal_itens.nota_fiscal_id'
+            )
             ->select(
                 'nota_fiscal_itens.id',
                 'nota_fiscal_itens.material_id',
                 'nota_fiscal_itens.faturado',
                 'nota_fiscal_itens.saldo_devedor',
-                'nota_fiscal_itens.updated_at'
+                'nota_fiscal_itens.updated_at',
+                'notas_fiscais.nota_fiscal',
+                'notas_fiscais.serie'
             )
             ->orderByDesc('nota_fiscal_itens.updated_at')
             ->limit(15)

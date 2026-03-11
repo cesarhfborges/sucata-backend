@@ -3,6 +3,7 @@ namespace App\Models;
 
 use App\Traits\SerializesDatesToLocalTimezone;
 use App\Traits\TracksUserActions;
+use Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -43,5 +44,12 @@ class Material extends Model {
     public function atualizadoPor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    protected function codigo(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => strtoupper($value),
+        );
     }
 }

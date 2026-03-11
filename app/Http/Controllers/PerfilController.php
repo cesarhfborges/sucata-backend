@@ -30,6 +30,7 @@ class PerfilController extends Controller
             'nome' => 'string|max:255',
             'sobrenome' => 'string|max:255',
             'email' => 'email|unique:users,email,' . $user->id,
+            'ativo'           => 'sometimes|boolean',
 
             'password'        => 'sometimes|nullable|min:6',
             'confirmPassword' => 'required_with:password|same:password',
@@ -38,6 +39,7 @@ class PerfilController extends Controller
         $user->nome = $request->input('nome');
         $user->sobrenome = $request->input('sobrenome');
         $user->email = $request->input('email');
+        $user->ativo = $request->input('ativo', true);
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->input('password'));
