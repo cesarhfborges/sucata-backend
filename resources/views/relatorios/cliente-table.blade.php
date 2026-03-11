@@ -1,3 +1,4 @@
+<!--suppress HtmlDeprecatedAttribute -->
 <style>
     .table {
         width: 100%;
