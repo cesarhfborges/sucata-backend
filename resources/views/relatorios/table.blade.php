@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <style>
     .table {
         width: 100%;
