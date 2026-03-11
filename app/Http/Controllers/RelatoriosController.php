@@ -125,16 +125,20 @@ class RelatoriosController extends Controller
             ])->render()
         );
 
-        if ($request->cliente_id) {
-            $itens->chunk(200)->each(function ($chunk) use ($totais, $mpdf) {
-                $mpdf->WriteHTML(
-                    view('relatorios.table', ['itens' => $chunk, 'totais' => $totais])->render()
-                );
-            });
+        $viewName = $request->filled('cliente_id')
+            ? 'relatorios.table'
+            : 'relatorios.cliente-table';
+
+        $itensCollection = collect($itens);
+
+        if ($itensCollection->isEmpty()) {
+            $mpdf->WriteHTML(
+                view($viewName, ['itens' => $itensCollection, 'totais' => $totais])->render()
+            );
         } else {
-            $itens->chunk(200)->each(function ($chunk) use ($totais, $mpdf) {
+            $itensCollection->chunk(200)->each(function ($chunk) use ($totais, $mpdf, $viewName) {
                 $mpdf->WriteHTML(
-                    view('relatorios.cliente-table', ['itens' => $chunk, 'totais' => $totais])->render()
+                    view($viewName, ['itens' => $chunk, 'totais' => $totais])->render()
                 );
             });
         }

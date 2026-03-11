@@ -33,36 +33,41 @@
         <th>NF-e</th>
         <th>Série</th>
         <th>Código</th>
-        {{--        <th>Produto</th>--}}
         <th>Status</th>
         <th>Faturado</th>
         <th>Saldo</th>
     </tr>
     </thead>
     <tbody>
-    @foreach($itens as $item)
+    @if(sizeof($itens) > 0)
+        @foreach($itens as $item)
+            <tr>
+                <td>
+                    @php
+                        $cpf_cnpj = $item->notaFiscal->cliente->cpf_cnpj ?? '';
+                            echo strlen($cpf_cnpj) < 12
+                            ? preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "\$1.\$2.\$3-\$4", $cpf_cnpj)
+                            : preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "\$1.\$2.\$3/\$4-\$5", $cpf_cnpj)
+                    @endphp
+                </td>
+                <td>
+                    {{ $item->notaFiscal->cliente->nome_razaosocial ?? '' }}
+                </td>
+                <td>{{ $item->notaFiscal->nota_fiscal ?? '' }}</td>
+                <td>{{ $item->notaFiscal->serie ?? ''}}</td>
+                <td>{{ $item->material->codigo ?? '' }}</td>
+                <td>{{ $item->saldo_devedor > 0 ? 'PENDENTE' : 'DEVOLVIDA' }}</td>
+                <td align="right">{{ $item->faturado ?? ''}}</td>
+                <td align="right">{{ $item->saldo_devedor ?? ''}}</td>
+            </tr>
+        @endforeach
+    @else
         <tr>
-            <td>
-                @php
-                    $cpf_cnpj = $item->notaFiscal->cliente->cpf_cnpj ?? '';
-                        echo strlen($cpf_cnpj) < 12
-                        ? preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "\$1.\$2.\$3-\$4", $cpf_cnpj)
-                        : preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "\$1.\$2.\$3/\$4-\$5", $cpf_cnpj)
-                @endphp
-                {{--                {{ $item->notaFiscal->cliente->cpf_cnpj ?? '' }}--}}
+            <td style="text-align: center" colspan="8">
+                Não existem dados a exibir
             </td>
-            <td>
-                {{ $item->notaFiscal->cliente->nome_razaosocial ?? '' }}
-            </td>
-            <td>{{ $item->notaFiscal->nota_fiscal ?? '' }}</td>
-            <td>{{ $item->notaFiscal->serie ?? ''}}</td>
-            <td>{{ $item->material->codigo ?? '' }}</td>
-            {{--            <td>{{ $item->material->descricao ?? ''}}</td>--}}
-            <td>{{ $item->saldo_devedor > 0 ? 'PENDENTE' : 'DEVOLVIDA' }}</td>
-            <td align="right">{{ $item->faturado ?? ''}}</td>
-            <td align="right">{{ $item->saldo_devedor ?? ''}}</td>
         </tr>
-    @endforeach
+    @endif
     </tbody>
     <tfoot>
     <tr style="background:#f0f0f0">
