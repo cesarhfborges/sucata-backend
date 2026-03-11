@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--suppress ALL -->
 <html lang="pt-br" data-bs-theme="auto">
 <head>
     <meta charset="UTF-8">
